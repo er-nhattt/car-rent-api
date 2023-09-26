@@ -1,4 +1,3 @@
-
 import { BaseEntityAbstract } from 'src/common/entities/base.entity';
 import { OrderDetail } from 'src/modules/orders/entities/order-detail.entity';
 import { User } from 'src/modules/users/entities/user.entity';
@@ -17,19 +16,19 @@ export class Review extends BaseEntityAbstract {
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
-  @Column({name: 'order_detail_id', nullable: true})
+  @Column({ name: 'order_detail_id', nullable: true })
   @Index('idx_reviews_order_detail_id')
-  orderDetailId: number
+  orderDetailId: number;
 
   @ManyToOne(() => OrderDetail, (orderDetail) => orderDetail.reviews, {
-    createForeignKeyConstraints: false
+    createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'order_detail_id', referencedColumnName: 'id' })
   orderDetail: OrderDetail;
 
-  @Column({nullable: true})
+  @Column({ nullable: true, type: 'text' })
   content: string;
 
-  @Column({ type: 'tinyint', enum: [1, 2, 3, 4, 5], nullable: true })
+  @Column({ type: 'tinyint', nullable: true })
   rating: number;
 }
