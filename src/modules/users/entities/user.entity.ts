@@ -27,7 +27,7 @@ export class User extends BaseEntityAbstract {
   @Column({ nullable: true })
   email: string;
 
-  @Column({ name: 'hashed_password' })
+  @Column({ name: 'hashed_password', nullable: true })
   hashedPassword: string;
 
   @OneToMany(() => Token, (token) => token.user, {
