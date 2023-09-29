@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import * as moment from "moment";
 import { AppModule } from './app.module';
 import { ApplicationExceptionFilter } from './common/exceptions/application-exception.filter';
 
@@ -11,6 +10,10 @@ async function bootstrap() {
     .setTitle('Car rent')
     .setDescription('The car rent API description')
     .setVersion('1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'accessToken',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {

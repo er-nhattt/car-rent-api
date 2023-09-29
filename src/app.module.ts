@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import * as path from 'path';
 import { CarsModule } from './modules/cars/cars.module';
 import { ImagesModule } from './modules/images/images.module';
 import { ConfigModule } from '@nestjs/config';

@@ -17,8 +17,8 @@
     "http_code": "400",
     "app_code": "INVALID_PARAMETER",
     "title": "Password is too weak.",
-    "prod": "Password must be at least 8 characters long, contain at least 1 lowercase letter, 1 uppercase letter, 1 number and 1 symbol.",
-    "inter": "Password must be at least 8 characters long, contain at least 1 lowercase letter, 1 uppercase letter, 1 number and 1 symbol."
+    "prod": "Password must be at least 8 characters long.",
+    "inter": "Password must be at least 8 characters long."
   },
   "USE-0003": {
     "http_code": "400",

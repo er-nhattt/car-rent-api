@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import * as moment from 'moment';
-import { UserError } from 'src/common/constants';
+import { SystemError, UserError } from 'src/common/constants';
 import { ApplicationError } from 'src/common/error/app.error';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
@@ -21,16 +21,17 @@ export class AuthService {
   ) {}
 
   async getTokens(user: User, tokenId: number) {
+    const { hashedPassword, ...restUser } = user;
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync({
-        tokenId: tokenId,
-        user,
+        tokenId,
+        user: restUser,
         expriedAt: moment()
           .add(process.env.JWT_EXPIRED_ACCESS_TOKEN_IN, 's')
           .format(),
       }),
       this.jwtService.signAsync({
-        tokenId: tokenId,
+        tokenId,
         userId: user.id,
         expriedAt: moment()
           .add(process.env.JWT_EXPIRED_REFRESH_TOKEN_IN, 's')
@@ -44,9 +45,22 @@ export class AuthService {
     };
   }
 
-  async login(loginDto: LoginDto): Promise<any> {
-    const user = await this.usersRepository.findOne({
+  async login(loginDto: LoginDto): Promise<{
+    access_token: string;
+    refresh_token: string;
+  }> {
+    const user: User = await this.usersRepository.findOne({
       where: { username: loginDto.username },
+      select: [
+        'id',
+        'username',
+        'firstName',
+        'lastName',
+        'avatarUrl',
+        'email',
+        'phoneNumber',
+        'hashedPassword',
+      ],
     });
 
     if (
@@ -66,5 +80,19 @@ export class AuthService {
       access_token: generateTokens.accessToken,
       refresh_token: generateTokens.refreshToken,
     };
+  }
+
+  async logout(accessToken: string) {
+    const decoded: any = this.jwtService.decode(accessToken);
+    const existedToken: Token = await this.tokensRepository.findOne({
+      where: { id: decoded.tokenId },
+    });
+    if (existedToken) {
+      this.tokensRepository.softDelete({
+        id: existedToken.id,
+      });
+    } else {
+      throw new ApplicationError(SystemError.OBJECT_NOT_FOUND);
+    }
   }
 }

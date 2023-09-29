@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { User } from './entities/user.entity';
 import { ApplicationError, ChildError } from 'src/common/error/app.error';
 import { EMAIL_REGEX, UserError } from 'src/common/constants';
+import { plainToClass } from '@nestjs/class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -15,13 +16,21 @@ export class UsersService {
   ) {}
 
   async getUserById(userId: number): Promise<User> {
-    return await this.usersRepository
-      .createQueryBuilder('users')
-      .where('user.id = :id', { id: userId })
-      .getOne();
+    return await this.usersRepository.findOne({
+      where: { id: userId },
+      select: [
+        'id',
+        'username',
+        'firstName',
+        'lastName',
+        'avatarUrl',
+        'email',
+        'phoneNumber',
+      ],
+    });
   }
 
-  async createUser(newUser: CreateUserDto) {
+  async createUser(newUser: CreateUserDto): Promise<User> {
     const childErrors: ChildError[] = [];
     const existedUser = await this.usersRepository.findOne({
       where: { username: newUser.username },
@@ -33,7 +42,6 @@ export class UsersService {
         field: 'username',
       };
       childErrors.push(childError);
-      throw new ApplicationError(UserError.USERNAME_ALREADY_EXISTED);
     }
     if (!EMAIL_REGEX.test(newUser.email)) {
       const childError = {
@@ -51,20 +59,22 @@ export class UsersService {
     }
 
     if (childErrors.length) {
-      throw new ApplicationError(UserError.SIGNUP_FAILURE, childErrors);
+      if (childErrors.length === 1) {
+        throw new ApplicationError(childErrors[0].key);
+      } else {
+        throw new ApplicationError(UserError.SIGNUP_FAILURE, childErrors);
+      }
     }
 
     const saltOrRounds = 10;
-    newUser.hashed_password = await bcrypt.hash(newUser.password, saltOrRounds);
-    return await this.usersRepository.save(
-      this.usersRepository.create({
-        username: newUser.username,
-        firstName: newUser.first_name,
-        lastName: newUser.last_name,
-        phoneNumber: newUser.phone_number,
-        email: newUser.email,
-        hashedPassword: newUser.hashed_password,
-      }),
-    );
+    const hashedPassword = await bcrypt.hash(newUser.password, saltOrRounds);
+    return await this.usersRepository.save({
+      username: newUser.username,
+      firstName: newUser.first_name,
+      lastName: newUser.last_name,
+      phoneNumber: newUser.phone_number,
+      email: newUser.email,
+      hashedPassword,
+    });
   }
 }
