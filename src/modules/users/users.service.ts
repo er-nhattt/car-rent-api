@@ -1,11 +1,11 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/CreateUserDto';
+import { CreateUserDto } from './dto/createUser.dto';
 import { User } from './entities/user.entity';
 import { ApplicationError, ChildError } from 'src/common/error/app.error';
-import { EMAIL_REGEX, SystemError, UserError } from 'src/common/constants';
+import { EMAIL_REGEX, UserError } from 'src/common/constants';
 
 @Injectable()
 export class UsersService {

@@ -33,6 +33,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(6)
   password: string;
-
+  
   hashed_password: string;
 }
