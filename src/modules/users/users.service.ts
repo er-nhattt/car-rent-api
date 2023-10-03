@@ -6,7 +6,6 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { User } from './entities/user.entity';
 import { ApplicationError, ChildError } from 'src/common/error/app.error';
 import { EMAIL_REGEX, UserError } from 'src/common/constants';
-import { plainToClass } from '@nestjs/class-transformer';
 
 @Injectable()
 export class UsersService {

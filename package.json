@@ -24,7 +24,8 @@
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "typeorm -- migration:revert",
     "typeorm": "npm run build && npx typeorm -d ./dist/database/migration.config.js",
-    "export_i18n": "node src/i18n/export_i18n.mjs"
+    "export_i18n": "node src/i18n/export_i18n.mjs",
+    "seed": "ts-node -r tsconfig-paths/register src/seed.ts"
   },
   "dependencies": {
     "@nestjs/class-transformer": "0.4.0",

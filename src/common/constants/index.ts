@@ -6,6 +6,11 @@ export enum Steering {
   Hybrid = 'hybrid',
 }
 
+export enum CityType {
+  PickUp = 'pickUp',
+  DropOff = 'dropOff',
+}
+
 export type Rating = 1 | 2 | 3 | 4 | 5;
 
 export enum OrderStatus {

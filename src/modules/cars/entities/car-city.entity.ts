@@ -3,6 +3,7 @@ import { Entity, Column, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntityAbstract } from 'src/common/entities/base.entity';
 import { City } from 'src/modules/cites/entities/city.entity';
 import { Car } from './car.entity';
+import { CityType } from 'src/common/constants';
 
 @Entity('car_cities')
 export class CarCity extends BaseEntityAbstract {
@@ -16,23 +17,16 @@ export class CarCity extends BaseEntityAbstract {
   @JoinColumn({ name: 'car_id', referencedColumnName: 'id' })
   car: Car;
 
-  @Column({ name: 'pick_up_city_id', nullable: true })
-  @Index('idx_car_cities_pick_up_city_id')
-  pickUpCityId: number;
+  @Column({ name: 'city_id', nullable: true })
+  @Index('idx_car_cities_city_id')
+  cityId: number;
 
-  @ManyToOne(() => City, (city) => city.pickUpCars, {
+  @ManyToOne(() => City, (city) => city.carCity, {
     createForeignKeyConstraints: false,
   })
-  @JoinColumn({ name: 'pick_up_city_id', referencedColumnName: 'id' })
-  pickUpCity: City;
-  
-  @Column({ name: 'drop_off_city_id', nullable: true })
-  @Index('idx_car_cities_drop_off_city_id')
-  dropOffCityId: number;
+  @JoinColumn({ name: 'city_id', referencedColumnName: 'id' })
+  city: City;
 
-  @ManyToOne(() => City, (city) => city.dropOffCars, {
-    createForeignKeyConstraints: false,
-  })
-  @JoinColumn({ name: 'drop_off_city_id', referencedColumnName: 'id' })
-  dropOffCity: City;
+  @Column({ name: 'city_type', nullable: true, type: 'enum', enum: CityType })
+  cityType: CityType;
 }

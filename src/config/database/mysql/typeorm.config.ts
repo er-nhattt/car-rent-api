@@ -1,8 +1,4 @@
-import { ConfigService } from '@nestjs/config';
-import {
-  TypeOrmModuleAsyncOptions,
-  TypeOrmModuleOptions,
-} from '@nestjs/typeorm';
+import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { Token } from 'src/modules/auth/entities/token.entity';
 import { CarTypeLanguage } from 'src/modules/car-types/entities/car-type-language.entity';
 import { CarType } from 'src/modules/car-types/entities/car-type.entity';
@@ -20,17 +16,21 @@ import { PaymentMethod } from 'src/modules/payment-methods/entities/payment-meth
 import { Promo } from 'src/modules/promos/entities/promo.entity';
 import { Review } from 'src/modules/reviews/entities/review.entity';
 import { User } from 'src/modules/users/entities/user.entity';
+import { MysqlConfigModule } from './config.module';
+import { MysqlConfigService } from './config.service';
 
 export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
-  useFactory: async (configService: ConfigService): Promise<any> => {
+  imports: [MysqlConfigModule],
+  inject: [MysqlConfigService],
+  useFactory: async (mysqlConfig: MysqlConfigService): Promise<any> => {
     return {
-      type: process.env.MYSQL_TYPE,
-      host: process.env.MYSQL_HOST || 'localhost',
-      port: parseInt(process.env.MYSQL_PORT, 10) || 3306,
-      username: process.env.MYSQL_USERNAME || 'root',
-      password: process.env.MYSQL_PASSWORD || '' as string,
-      database: process.env.MYSQL_DATABASE,
-      synchronize: process.env.MYSQL_SYNCHRONIZE === 'true',
+      type: 'mysql',
+      host: mysqlConfig.host,
+      port: mysqlConfig.port,
+      username: mysqlConfig.username,
+      password: mysqlConfig.password,
+      database: mysqlConfig.database,
+      synchronize: mysqlConfig.synchronize,
       entities: [
         Token,
         CarType,
