@@ -4,11 +4,9 @@ import {
   Delete,
   Headers,
   Post,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { access } from 'fs';
 import { Serialize } from 'src/common/interceptors/tranform-interceptor';
 import { AuthService } from './auth.service';
 import { LoginResponseDto } from './dto/login-response.dto';

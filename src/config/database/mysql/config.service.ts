@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class MysqlConfigService {
   constructor(private configService: ConfigService) {}
-  
+
   get host(): string {
     return this.configService.get<string>('mysql.host');
   }

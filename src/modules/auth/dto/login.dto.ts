@@ -4,11 +4,11 @@ import { MinLength } from 'class-validator';
 
 @Exclude()
 export class LoginDto {
-  @ApiProperty({example: 'username123'})
+  @ApiProperty({ example: 'username123' })
   @Expose()
   username: string;
 
-  @ApiProperty({example: '123456789'})
+  @ApiProperty({ example: '123456789' })
   @MinLength(6)
   password: string;
 }

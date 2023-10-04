@@ -7,7 +7,7 @@ export class CreateUserDto {
   @ApiProperty({ example: 'username123' })
   @Expose()
   @IsNotEmpty()
-  username: string; 
+  username: string;
 
   @ApiProperty({ example: 'John' })
   @Expose()
@@ -33,5 +33,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(8)
   password: string;
-
 }

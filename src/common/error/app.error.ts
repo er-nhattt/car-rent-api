@@ -1,5 +1,3 @@
-import { HttpException } from '@nestjs/common';
-
 export interface ChildError {
   key: string;
   field: string;

@@ -28,6 +28,6 @@ export class UserDto {
   phone_number: string;
 
   @Expose()
-  @Transform(({ obj }) => _.get(obj, 'images.0.url', null))
+  @Transform(({ obj }) => _.get(obj, 'avatarUrl', null))
   avatar_url: string;
 }

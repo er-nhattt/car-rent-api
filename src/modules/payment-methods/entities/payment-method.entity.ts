@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 
 import { PaymentMethodType } from 'src/common/constants';
 import { BaseEntityAbstract } from 'src/common/entities/base.entity';

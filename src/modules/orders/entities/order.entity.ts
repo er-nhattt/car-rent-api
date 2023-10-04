@@ -50,7 +50,7 @@ export class Order extends BaseEntityAbstract {
   paymentMethodCode: string;
 
   @ManyToOne(() => PaymentMethod, (paymentMethod) => paymentMethod.orders, {
-    createForeignKeyConstraints: false
+    createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'payment_method_code', referencedColumnName: 'code' })
   paymentMethod: PaymentMethod;
@@ -65,7 +65,7 @@ export class Order extends BaseEntityAbstract {
   status: OrderStatus;
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order, {
-    createForeignKeyConstraints: false
+    createForeignKeyConstraints: false,
   })
   orderDetails: OrderDetail[];
 }

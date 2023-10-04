@@ -55,7 +55,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (new Date(payload.expriedAt) < new Date()) {
       throw new ApplicationError(TokenError.TOKEN_EXPIRED);
     }
-    
+
     return user;
   }
 }

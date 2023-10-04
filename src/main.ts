@@ -5,7 +5,6 @@ import { ApplicationExceptionFilter } from './common/exceptions/application-exce
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  console.log(process.env.MYSQL_PASSWORD);
   app.useGlobalFilters(new ApplicationExceptionFilter());
   const config = new DocumentBuilder()
     .setTitle('Car rent')

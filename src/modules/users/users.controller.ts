@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  Headers,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Serialize } from 'src/common/interceptors/tranform-interceptor';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -22,7 +29,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Serialize(UserDto)
   @Get('me')
-  getUser(userId: number) {
-    return this.usersService.getUserById(userId);
+  getUser(@Headers('authorization') accessToken: string) {
+    return this.usersService.getUserById(accessToken.split(' ')[1]);
   }
 }

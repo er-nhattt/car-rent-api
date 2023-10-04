@@ -1,6 +1,5 @@
 import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
 
-
 import { BaseEntityAbstract } from 'src/common/entities/base.entity';
 import { CarType } from 'src/modules/car-types/entities/car-type.entity';
 import { Car } from './car.entity';

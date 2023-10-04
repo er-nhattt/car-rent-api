@@ -26,7 +26,7 @@ export class CarLanguage extends BaseEntityAbstract {
   @JoinColumn({ name: 'car_id', referencedColumnName: 'id' })
   car: Car;
 
-  @Index('idx_car_languages_car_name')
+  @Index('idx_car_languages_car_name', { fulltext: true })
   @Column({ name: 'car_name', nullable: true })
   carName: string;
 

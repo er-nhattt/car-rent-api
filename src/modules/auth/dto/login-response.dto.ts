@@ -1,5 +1,4 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
-import * as _ from 'lodash';
+import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
 export class LoginResponseDto {

@@ -6,17 +6,26 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { User } from './entities/user.entity';
 import { ApplicationError, ChildError } from 'src/common/error/app.error';
 import { EMAIL_REGEX, UserError } from 'src/common/constants';
+import { JwtService } from '@nestjs/jwt';
+import { Token } from '../auth/entities/token.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
+    private jwtService: JwtService,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Token)
+    private tokensRepository: Repository<Token>,
   ) {}
 
-  async getUserById(userId: number): Promise<User> {
+  async getUserById(accessToken: string): Promise<User> {
+    const decoded: any = this.jwtService.decode(accessToken);
+    const existedToken: Token = await this.tokensRepository.findOne({
+      where: { id: decoded.tokenId },
+    });
     return await this.usersRepository.findOne({
-      where: { id: userId },
+      where: { id: existedToken.userId },
       select: [
         'id',
         'username',
