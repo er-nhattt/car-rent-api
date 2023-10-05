@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsInt, IsNumber, IsOptional } from 'class-validator';
-import { PaginationRequestDto } from 'src/common/dto';
+import { PaginationRequestDto } from 'src/common/dto/PaginationRequest.dto';
 
 export class GetCarsFilterDto extends PaginationRequestDto {
   @IsOptional()

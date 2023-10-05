@@ -24,7 +24,7 @@ export class UsersService {
     const existedToken: Token = await this.tokensRepository.findOne({
       where: { id: decoded.tokenId },
     });
-    return await this.usersRepository.findOne({
+    const result = await this.usersRepository.findOne({
       where: { id: existedToken.userId },
       select: [
         'id',
@@ -36,6 +36,8 @@ export class UsersService {
         'phoneNumber',
       ],
     });
+
+    return result;
   }
 
   async createUser(newUser: CreateUserDto): Promise<User> {
@@ -76,7 +78,7 @@ export class UsersService {
 
     const saltOrRounds = 10;
     const hashedPassword = await bcrypt.hash(newUser.password, saltOrRounds);
-    return await this.usersRepository.save({
+    return this.usersRepository.save({
       username: newUser.username,
       firstName: newUser.first_name,
       lastName: newUser.last_name,

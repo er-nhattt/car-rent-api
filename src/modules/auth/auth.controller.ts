@@ -21,13 +21,15 @@ export class AuthController {
   @Serialize(LoginResponseDto)
   @Post('auth/login')
   async login(@Body() loginDto: LoginDto) {
-    return await this.authService.login(loginDto);
+    const result = await this.authService.login(loginDto);
+    return result;
   }
 
   @Delete('auth/logout')
   @ApiBearerAuth('accessToken')
   @UseGuards(JwtAuthGuard)
-  logout(@Headers('authorization') accessToken: string) {
-    return this.authService.logout(accessToken.split(' ')[1]);
+  async logout(@Headers('authorization') accessToken: string) {
+    const result = await this.authService.logout(accessToken.split(' ')[1]);
+    return result;
   }
 }

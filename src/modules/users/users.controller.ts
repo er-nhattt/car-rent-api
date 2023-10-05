@@ -11,7 +11,6 @@ import { Serialize } from 'src/common/interceptors/tranform-interceptor';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UserDto } from './dto/user.dto';
-import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @ApiTags('Users')
@@ -21,15 +20,19 @@ export class UsersController {
 
   @Serialize(UserDto)
   @Post('auth/signup')
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return await this.usersService.createUser(createUserDto);
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    const result = await this.usersService.createUser(createUserDto);
+    return result;
   }
 
   @ApiBearerAuth('accessToken')
   @UseGuards(JwtAuthGuard)
   @Serialize(UserDto)
   @Get('me')
-  getUser(@Headers('authorization') accessToken: string) {
-    return this.usersService.getUserById(accessToken.split(' ')[1]);
+  async getUser(@Headers('authorization') accessToken: string) {
+    const result = await this.usersService.getUserById(
+      accessToken.split(' ')[1],
+    );
+    return result;
   }
 }

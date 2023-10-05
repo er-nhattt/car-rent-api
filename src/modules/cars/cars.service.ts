@@ -43,7 +43,6 @@ export class CarsService {
         newPrice: getCarsFilterDto.max_price
           ? LessThanOrEqual(getCarsFilterDto.max_price)
           : undefined,
-
         cities:
           getCarsFilterDto.pick_up_city_id || getCarsFilterDto.drop_off_city_id
             ? {
@@ -82,5 +81,39 @@ export class CarsService {
         limit: getCarsFilterDto.limit || LIMIT_PAGINATION,
       },
     };
+  }
+
+  async getCarById(id: number, languageCode: string) {
+    const result = await this.carsRepository.findOne({
+      where: {
+        id,
+        languages: {
+          languageCode,
+        },
+        images: {
+          objectId: id,
+          objectType: 'car',
+        },
+        carTypes: {
+          carType: {
+            languages: {
+              languageCode,
+            },
+          },
+        },
+        
+      },
+      relations: {
+        languages: true,
+        images: true,
+        carTypes: {
+          carType: {
+            languages: true,
+          },
+        },
+      },
+    });
+
+    return result;
   }
 }
