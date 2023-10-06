@@ -3,10 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, LessThanOrEqual, Raw, Repository } from 'typeorm';
 import { Car } from './entities/car.entity';
 import { GetCarsFilterDto } from './dto/get-cars-filter.dto';
-import {
-  CityType,
-  LIMIT_PAGINATION,
-} from 'src/common/constants';
+import { CityType, LIMIT_PAGINATION } from 'src/common/constants';
 import { Favourite } from '../favourites/entities/favourite.entity';
 import { User } from '../users/entities/user.entity';
 @Injectable()
@@ -24,6 +21,7 @@ export class CarsService {
     languageCode: string,
     user: User,
   ) {
+    const offset = LIMIT_PAGINATION * (getCarsFilterDto.page - 1);
     const [data, total] = await this.carsRepository.findAndCount({
       where: {
         languages: {
@@ -66,7 +64,7 @@ export class CarsService {
               }
             : undefined,
       },
-      skip: LIMIT_PAGINATION * (getCarsFilterDto.page - 1),
+      skip: offset,
       take: LIMIT_PAGINATION,
       relations: {
         languages: true,
@@ -97,7 +95,7 @@ export class CarsService {
       items: data,
       pagination: {
         total,
-        offset: LIMIT_PAGINATION * (getCarsFilterDto.page - 1),
+        offset,
         limit: LIMIT_PAGINATION,
       },
     };

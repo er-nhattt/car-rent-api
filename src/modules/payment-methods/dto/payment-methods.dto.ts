@@ -1,12 +1,12 @@
 import { Exclude, Expose, Type } from 'class-transformer';
 import { PaginationResponseDto } from 'src/common/dto/paginationResponse.dto';
-import { CarTypeDto } from './car-type.dto';
+import { PaymentMethodDto } from './payment-method.dto';
 
 @Exclude()
-export class CarTypesDto {
+export class PaymentMethodsDto {
   @Expose()
-  @Type(() => CarTypeDto)
-  items: CarTypeDto[];
+  @Type(() => PaymentMethodDto)
+  items: PaymentMethodDto[];
 
   @Expose()
   @Type(() => PaginationResponseDto)
