@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   UseGuards,
-  Headers,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';

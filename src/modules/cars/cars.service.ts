@@ -6,7 +6,6 @@ import { GetCarsFilterDto } from './dto/get-cars-filter.dto';
 import {
   CityType,
   LIMIT_PAGINATION,
-  OFFSET_PAGINATION,
 } from 'src/common/constants';
 import { Favourite } from '../favourites/entities/favourite.entity';
 import { User } from '../users/entities/user.entity';
@@ -67,8 +66,8 @@ export class CarsService {
               }
             : undefined,
       },
-      skip: getCarsFilterDto.offset || OFFSET_PAGINATION,
-      take: getCarsFilterDto.limit || LIMIT_PAGINATION,
+      skip: LIMIT_PAGINATION * (getCarsFilterDto.page - 1),
+      take: LIMIT_PAGINATION,
       relations: {
         languages: true,
         carTypes: {
@@ -98,8 +97,8 @@ export class CarsService {
       items: data,
       pagination: {
         total,
-        offset: getCarsFilterDto.offset || OFFSET_PAGINATION,
-        limit: getCarsFilterDto.limit || LIMIT_PAGINATION,
+        offset: LIMIT_PAGINATION * (getCarsFilterDto.page - 1),
+        limit: LIMIT_PAGINATION,
       },
     };
   }

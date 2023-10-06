@@ -1,4 +1,4 @@
-import { Exclude, Expose, Transform, Type } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import * as _ from 'lodash';
 
 @Exclude()
