@@ -8,16 +8,22 @@ import {
   LIMIT_PAGINATION,
   OFFSET_PAGINATION,
 } from 'src/common/constants';
+import { Favourite } from '../favourites/entities/favourite.entity';
+import { User } from '../users/entities/user.entity';
 @Injectable()
 export class CarsService {
   constructor(
     @InjectRepository(Car)
     private carsRepository: Repository<Car>,
+
+    @InjectRepository(Favourite)
+    private favouritesRepository: Repository<Favourite>,
   ) {}
 
   async getCarByFilter(
     getCarsFilterDto: GetCarsFilterDto,
     languageCode: string,
+    user: User,
   ) {
     const [data, total] = await this.carsRepository.findAndCount({
       where: {
@@ -73,6 +79,21 @@ export class CarsService {
       },
     });
 
+    if (user) {
+      for (const car of data) {
+        const favourite = await this.favouritesRepository.findOne({
+          where: {
+            carId: car.id,
+            userId: user.id,
+          },
+          select: ['id', 'carId', 'userId', 'deletedAt'],
+          withDeleted: true,
+        });
+        car['favourite_status'] =
+          favourite && !favourite.deletedAt ? true : false;
+      }
+    }
+
     return {
       items: data,
       pagination: {
@@ -83,7 +104,7 @@ export class CarsService {
     };
   }
 
-  async getCarById(id: number, languageCode: string) {
+  async getCarById(id: number, languageCode: string, user: User) {
     const result = await this.carsRepository.findOne({
       where: {
         id,
@@ -101,7 +122,6 @@ export class CarsService {
             },
           },
         },
-        
       },
       relations: {
         languages: true,
@@ -113,6 +133,19 @@ export class CarsService {
         },
       },
     });
+
+    if (user) {
+      const favourite = await this.favouritesRepository.findOne({
+        where: {
+          carId: result.id,
+          userId: user.id,
+        },
+        select: ['id', 'carId', 'userId', 'deletedAt'],
+        withDeleted: true,
+      });
+      result['favourite_status'] =
+        favourite && !favourite.deletedAt ? true : false;
+    }
 
     return result;
   }

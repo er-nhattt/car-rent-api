@@ -7,10 +7,12 @@ import {
   Headers,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { Serialize } from 'src/common/interceptors/tranform-interceptor';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UserDto } from './dto/user.dto';
+import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @ApiTags('Users')
@@ -29,10 +31,8 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Serialize(UserDto)
   @Get('me')
-  async getUser(@Headers('authorization') accessToken: string) {
-    const result = await this.usersService.getUserById(
-      accessToken.split(' ')[1],
-    );
+  async getUser(@CurrentUser() user: User) {
+    const result = await this.usersService.getUserById(user);
     return result;
   }
 }

@@ -44,6 +44,6 @@ export class CarDto {
   thumbnail_url: string;
 
   @Expose()
-  @Transform(({ obj }) => _.get(obj, 'favouriteStatus', false))
+  @Transform(({ obj }) => _.get(obj, 'favourite_status', false))
   favourite_status: boolean;
 }
