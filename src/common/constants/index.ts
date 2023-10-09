@@ -29,8 +29,9 @@ export enum PromoType {
 // Constants
 export const EMAIL_REGEX = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 export const LIMIT_PAGINATION = 9;
+export const CITY_LIMIT_PAGINATION = 20;
 export const OFFSET_PAGINATION = 0;
-export const IS_PUBLIC_KEY = 'isPublic'
+export const IS_PUBLIC_KEY = 'isPublic';
 
 // Error code
 export const CarError = {
