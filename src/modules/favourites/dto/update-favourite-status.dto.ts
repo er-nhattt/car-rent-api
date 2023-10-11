@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsBoolean, IsBooleanString, IsInt, IsNotEmpty } from 'class-validator';
 
 export class UpdateFavouriteStatusDto {
-  @IsNotEmpty()
   @ApiProperty({ example: true })
+  @IsBoolean({ message: 'system.CUS-0603' })
   status: boolean;
 
-  @IsNotEmpty()
+  @IsInt({ message: 'system.CUS-0603' })
   @ApiProperty({ example: 1 })
   car_id: number;
 }

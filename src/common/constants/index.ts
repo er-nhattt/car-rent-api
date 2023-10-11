@@ -33,11 +33,11 @@ export enum PaymentMethodCode {
 }
 
 // Constants
-export const EMAIL_REGEX = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 export const LIMIT_PAGINATION = 9;
 export const CITY_LIMIT_PAGINATION = 20;
 export const OFFSET_PAGINATION = 0;
 export const IS_PUBLIC_KEY = 'isPublic';
+export const REGEX_USERNAME = /^[a-zA-Z0-9]+$/;
 
 // Error code
 export const CarError = {
@@ -59,6 +59,7 @@ export const PromoError = {
 };
 
 export const SystemError = {
+  EMPTY_FIELD: 'system.CUS-0001',
   OBJECT_NOT_FOUND: 'system.CUS-0602',
   INVALID_PARAMETER: 'system.CUS-0603',
 };

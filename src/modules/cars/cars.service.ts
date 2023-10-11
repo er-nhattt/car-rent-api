@@ -21,6 +21,7 @@ export class CarsService {
     languageCode: string,
     user: User,
   ) {
+  
     const offset = LIMIT_PAGINATION * (getCarsFilterDto.page - 1);
     const [data, total] = await this.carsRepository.findAndCount({
       where: {

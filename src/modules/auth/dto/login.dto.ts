@@ -1,14 +1,12 @@
-import { Exclude, Expose } from '@nestjs/class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { MinLength } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
-@Exclude()
 export class LoginDto {
   @ApiProperty({ example: 'username123' })
-  @Expose()
+  @IsNotEmpty({ message: 'system.CUS-0001' })
   username: string;
 
   @ApiProperty({ example: '123456789' })
-  @MinLength(6)
+  @IsNotEmpty({ message: 'system.CUS-0001' })
   password: string;
 }

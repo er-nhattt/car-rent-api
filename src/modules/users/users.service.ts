@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/createUser.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { ApplicationError, ChildError } from 'src/common/error/app.error';
-import { EMAIL_REGEX, UserError } from 'src/common/constants';
+import { REGEX_USERNAME, SystemError, UserError } from 'src/common/constants';
 
 @Injectable()
 export class UsersService {
@@ -33,38 +33,25 @@ export class UsersService {
 
   async createUser(newUser: CreateUserDto): Promise<User> {
     const childErrors: ChildError[] = [];
+
+    if (
+      typeof newUser.username === 'number' ||
+      typeof Number(newUser.username) === 'number' ||
+      !newUser.username.match(REGEX_USERNAME)
+    ) {
+      throw new ApplicationError(UserError.SIGNUP_FAILURE, [
+        { key: SystemError.INVALID_PARAMETER, field: 'username' },
+      ]);
+    }
+
     const existedUser = await this.usersRepository.findOne({
       where: { username: newUser.username },
     });
 
     if (existedUser) {
-      const childError = {
-        key: UserError.USERNAME_ALREADY_EXISTED,
-        field: 'username',
-      };
-      childErrors.push(childError);
-    }
-    if (!EMAIL_REGEX.test(newUser.email)) {
-      const childError = {
-        key: UserError.INVALID_EMAIL,
-        field: 'email',
-      };
-      childErrors.push(childError);
-    }
-    if (newUser.password.length < 9) {
-      const childError = {
-        key: UserError.INVALID_PASSWORD,
-        field: 'password',
-      };
-      childErrors.push(childError);
-    }
-
-    if (childErrors.length) {
-      if (childErrors.length === 1) {
-        throw new ApplicationError(childErrors[0].key);
-      } else {
-        throw new ApplicationError(UserError.SIGNUP_FAILURE, childErrors);
-      }
+      throw new ApplicationError(UserError.SIGNUP_FAILURE, [
+        { key: UserError.USERNAME_ALREADY_EXISTED, field: 'username' },
+      ]);
     }
 
     const saltOrRounds = 10;

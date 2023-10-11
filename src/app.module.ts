@@ -14,9 +14,11 @@ import { PromosModule } from './modules/promos/promos.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { typeOrmAsyncConfig } from './config/database/mysql/typeorm.config';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import { MysqlConfigModule } from './config/database/mysql/config.module';
 
 @Module({
   imports: [
+    MysqlConfigModule,
     ConfigModule.forRoot({
       envFilePath: ['.env'],
     }),

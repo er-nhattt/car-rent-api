@@ -21,6 +21,7 @@ export class AuthController {
   @Serialize(LoginResponseDto)
   @Post('auth/login')
   async login(@Body() loginDto: LoginDto) {
+    console.log('loginDto:', loginDto);
     const result = await this.authService.login(loginDto);
     return result;
   }

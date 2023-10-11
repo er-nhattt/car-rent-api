@@ -4,7 +4,6 @@ import { PaginationRequestDto } from 'src/common/dto/PaginationRequest.dto';
 
 export class GetCitiesDto extends PaginationRequestDto {
   @IsOptional()
-  @IsInt()
   @ApiProperty({ required: false })
   car_id: number;
 

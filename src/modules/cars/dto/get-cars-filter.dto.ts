@@ -9,9 +9,6 @@ export class GetCarsFilterDto extends PaginationRequestDto {
   name: string;
 
   @IsOptional()
-  @Transform(({ value }) => {
-    return value.split(',').map((item: string) => Number(item));
-  })
   @ApiProperty({ required: false, type: 'array', items: { type: 'number' } })
   type: number[];
 
@@ -28,7 +25,7 @@ export class GetCarsFilterDto extends PaginationRequestDto {
   @ApiProperty({ required: false })
   max_price: number;
 
-  @IsInt()
+  @IsInt({ message: 'system.CUS-0603' })
   @IsOptional()
   @ApiProperty({ required: false })
   pick_up_city_id: number;
@@ -37,7 +34,7 @@ export class GetCarsFilterDto extends PaginationRequestDto {
   @ApiProperty({ required: false })
   pick_up_at: Date;
 
-  @IsInt()
+  @IsInt({ message: 'system.CUS-0603' })
   @IsOptional()
   @ApiProperty({ required: false })
   drop_off_city_id: number;

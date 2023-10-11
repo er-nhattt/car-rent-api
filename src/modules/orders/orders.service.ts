@@ -7,7 +7,7 @@ import {
   CarError,
   CityType,
 } from 'src/common/constants';
-import { ApplicationError, ChildError } from 'src/common/error/app.error';
+import { ChildError } from 'src/common/error/app.error';
 import {
   Between,
   EntityManager,
@@ -28,8 +28,8 @@ export class OrdersService {
   constructor() {}
 
   async validateOrder(createOrderDto: CreateOrderDto, manager: EntityManager) {
-    console.log('createOrderDto:', createOrderDto);
     const childErrors: ChildError[] = [];
+    let validDatetime = true;
     if (!createOrderDto.order_name) {
       childErrors.push({
         key: OrderError.CAN_NOT_ORDER,
@@ -84,19 +84,52 @@ export class OrdersService {
       });
     }
 
-    if (moment().diff(createOrderDto.pick_up_at, 'hours') > -24) {
+    if (createOrderDto.pick_up_at >= createOrderDto.drop_off_at) {
+      validDatetime = false;
       childErrors.push({
-        key: OrderError.RENTAL_TIME_IN_PAST,
-        field: 'pick_up_at',
-      });
-    }
-
-    if (moment().diff(createOrderDto.drop_off_at, 'hours') > -24) {
-      childErrors.push({
-        key: OrderError.RENTAL_TIME_IN_PAST,
+        key: OrderError.INVALID_RENTAL_TIME,
         field: 'drop_off_at',
       });
+    } else {
+      if (moment().diff(createOrderDto.pick_up_at, 'hours') > -24) {
+        validDatetime = false;
+        childErrors.push({
+          key: OrderError.RENTAL_TIME_IN_PAST,
+          field: 'pick_up_at',
+        });
+      }
+
+      if (moment().diff(createOrderDto.drop_off_at, 'hours') > -24) {
+        validDatetime = false;
+        childErrors.push({
+          key: OrderError.RENTAL_TIME_IN_PAST,
+          field: 'drop_off_at',
+        });
+      }
     }
+
+    if (validDatetime) {
+      const orderConflict = await this.checkCarHasBeenRentAtTime(
+        car.id,
+        createOrderDto.pick_up_at,
+        createOrderDto.drop_off_at,
+        manager,
+      );
+
+      if (orderConflict) {
+        childErrors.push(
+          {
+            key: OrderError.CONFLICT_RENTAL_TIME,
+            field: 'pick_up_at',
+          },
+          {
+            key: OrderError.CONFLICT_RENTAL_TIME,
+            field: 'drop_off_at',
+          },
+        );
+      }
+    }
+
     const paymentMethod = await manager.findOne(PaymentMethod, {
       where: {
         code: createOrderDto.payment_method_code,
@@ -108,28 +141,6 @@ export class OrdersService {
         key: OrderError.CAN_NOT_ORDER,
         field: 'payment_method',
       });
-    }
-
-    const orderConflict = await this.checkCarHasBeenRentAtTime(
-      car.id,
-      createOrderDto.pick_up_at,
-      createOrderDto.drop_off_at,
-      manager,
-    );
-
-    console.log(orderConflict);
-
-    if (orderConflict) {
-      childErrors.push(
-        {
-          key: OrderError.CONFLICT_RENTAL_TIME,
-          field: 'pick_up_at',
-        },
-        {
-          key: OrderError.CONFLICT_RENTAL_TIME,
-          field: 'drop_off_at',
-        },
-      );
     }
 
     return childErrors;
@@ -175,7 +186,6 @@ export class OrdersService {
     promo: Promo | null,
     manager: EntityManager,
   ): Promise<Order> {
-    console.log(213123123);
     const order = await manager.save(Order, {
       userId: user.id,
       orderName: createOrderDto.order_name,

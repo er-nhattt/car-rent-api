@@ -1,36 +1,28 @@
-import { Exclude, Expose } from '@nestjs/class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
-@Exclude()
 export class CreateUserDto {
+  @IsNotEmpty({ message: 'system.CUS-0001' })
   @ApiProperty({ example: 'username123' })
-  @Expose()
-  @IsNotEmpty()
   username: string;
 
+  @IsNotEmpty({ message: 'system.CUS-0001' })
   @ApiProperty({ example: 'John' })
-  @Expose()
-  @IsNotEmpty()
   first_name: string;
 
+  @IsNotEmpty({ message: 'system.CUS-0001' })
   @ApiProperty({ example: 'Tran' })
-  @Expose()
-  @IsNotEmpty()
   last_name: string;
 
+  @IsNotEmpty({ message: 'system.CUS-0001' })
   @ApiProperty({ example: '0923029374' })
-  @Expose()
-  @IsNotEmpty()
   phone_number: string;
 
+  @IsEmail({}, { message: 'user.USE-0001' })
   @ApiProperty({ example: 'example@gmail.com' })
-  @Expose()
-  @IsEmail()
   email: string;
 
+  @MinLength(8, { message: 'user.USE-0002' })
   @ApiProperty()
-  @IsNotEmpty()
-  @MinLength(8)
   password: string;
 }

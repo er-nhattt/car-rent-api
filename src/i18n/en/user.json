@@ -24,8 +24,8 @@
     "http_code": "400",
     "app_code": "INVALID_PARAMETER",
     "title": "Wrong credentials.",
-    "prod": "Invalid email or password.",
-    "inter": "Invalid email or password."
+    "prod": "Invalid username or password.",
+    "inter": "Invalid username or password."
   },
   "USE-0006": {
     "http_code": "400",
