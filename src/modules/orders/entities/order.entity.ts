@@ -43,8 +43,8 @@ export class Order extends BaseEntityAbstract {
   @Column({ name: 'promo_type', nullable: true })
   promoType: string;
 
-  @Column({ nullable: true })
-  discount: string;
+  @Column({ nullable: true, type: 'float' })
+  discount: number;
 
   @Column({ name: 'payment_method_code', nullable: true })
   paymentMethodCode: string;
@@ -55,9 +55,6 @@ export class Order extends BaseEntityAbstract {
   @JoinColumn({ name: 'payment_method_code', referencedColumnName: 'code' })
   paymentMethod: PaymentMethod;
 
-  @Column({ name: 'payment_method_type', nullable: true })
-  paymentMethodType: string;
-
   @Column({ name: 'total_price', nullable: true })
   totalPrice: number;
 
@@ -67,5 +64,5 @@ export class Order extends BaseEntityAbstract {
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order, {
     createForeignKeyConstraints: false,
   })
-  orderDetails: OrderDetail[];
+  details: OrderDetail[];
 }

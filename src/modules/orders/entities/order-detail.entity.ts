@@ -11,7 +11,7 @@ export class OrderDetail extends BaseEntityAbstract {
   @Column({ name: 'order_id', nullable: true })
   orderId: number;
 
-  @ManyToOne(() => Order, (order) => order.orderDetails, {
+  @ManyToOne(() => Order, (order) => order.details, {
     createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'order_id', foreignKeyConstraintName: 'id' })

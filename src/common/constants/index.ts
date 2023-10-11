@@ -26,6 +26,12 @@ export enum PromoType {
   Percentage = 'percentage',
 }
 
+export enum PaymentMethodCode {
+  Cod = 'cod',
+  Stripe = 'stripe',
+  Paypal = 'paypal',
+}
+
 // Constants
 export const EMAIL_REGEX = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
 export const LIMIT_PAGINATION = 9;
