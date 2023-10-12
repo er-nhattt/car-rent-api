@@ -1,16 +1,11 @@
-import { Exclude, Expose, Transform, Type } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import * as _ from 'lodash';
-import { CreatedOrderDetailDto } from './created-order-detail.dto';
 
 @Exclude()
 export class CreatedOrderDto {
   @Expose()
   @Transform(({ obj }) => _.get(obj, 'id', null))
   order_id: number;
-
-  @Expose()
-  @Transform(({ obj }) => _.get(obj, 'userId', null))
-  user_id: number;
 
   @Expose()
   @Transform(({ obj }) => _.get(obj, 'orderName', null))
@@ -50,8 +45,4 @@ export class CreatedOrderDto {
   @Expose()
   @Transform(({ obj }) => _.get(obj, 'status', null))
   status: string;
-
-  @Expose()
-  @Type(() => CreatedOrderDetailDto)
-  details: CreatedOrderDetailDto[];
 }

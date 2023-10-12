@@ -54,6 +54,7 @@ export class OrdersController {
         promo,
         queryRunner.manager,
       );
+      
       await queryRunner.commitTransaction();
       return order;
     } catch (error) {

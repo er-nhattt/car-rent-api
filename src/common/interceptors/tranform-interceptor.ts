@@ -23,12 +23,15 @@ export class SerializeInterceptor implements NestInterceptor {
   constructor(private dto: any) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle().pipe(
-      map((data) =>
-        plainToInstance(ResponseSerializer, {
-          data: JSON.parse(JSON.stringify(plainToInstance(this.dto, data))),
-        }),
-      ),
-    );
+    return next
+      .handle()
+      .pipe(
+        map((data) =>
+          plainToInstance(
+            ResponseSerializer,
+            JSON.parse(JSON.stringify(plainToInstance(this.dto, data))),
+          ),
+        ),
+      );
   }
 }

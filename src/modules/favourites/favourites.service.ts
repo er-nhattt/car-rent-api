@@ -23,11 +23,7 @@ export class FavouritesService {
     });
 
     if (!favourite) {
-      const result = await this.createFavourite(
-        updateFavouriteStatusDto.car_id,
-        user,
-      );
-      return result;
+      await this.createFavourite(updateFavouriteStatusDto.car_id, user);
     } else {
       if (updateFavouriteStatusDto.status) {
         if (favourite.deletedAt) {
@@ -42,6 +38,9 @@ export class FavouritesService {
         }
       }
     }
+    return {
+      message: 'Favourite success',
+    };
   }
 
   async createFavourite(carId: number, user: User): Promise<Favourite> {

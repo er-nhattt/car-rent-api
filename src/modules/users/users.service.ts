@@ -36,7 +36,7 @@ export class UsersService {
 
     if (
       typeof newUser.username === 'number' ||
-      typeof Number(newUser.username) === 'number' ||
+      !isNaN(Number(newUser.username)) ||
       !newUser.username.match(REGEX_USERNAME)
     ) {
       throw new ApplicationError(UserError.SIGNUP_FAILURE, [

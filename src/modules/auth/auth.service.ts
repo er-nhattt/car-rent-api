@@ -20,7 +20,7 @@ export class AuthService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async getTokens(user: User, tokenId: number) {
+  async generateTokens(user: User, tokenId: number) {
     const { hashedPassword, ...restUser } = user;
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync({
@@ -74,7 +74,7 @@ export class AuthService {
       userId: user.id,
     });
 
-    const generateTokens = await this.getTokens(user, token.id);
+    const generateTokens = await this.generateTokens(user, token.id);
 
     return {
       access_token: generateTokens.accessToken,
@@ -91,6 +91,9 @@ export class AuthService {
       this.tokensRepository.softDelete({
         id: existedToken.id,
       });
+      return {
+        message: 'Logout success',
+      };
     } else {
       throw new ApplicationError(SystemError.OBJECT_NOT_FOUND);
     }
