@@ -14,9 +14,9 @@ export enum CityType {
 export type Rating = 1 | 2 | 3 | 4 | 5;
 
 export enum OrderStatus {
-  InProgress = 'inProgress',
+  InProgress = 'in progress',
   Paid = 'paid',
-  UnPaid = 'unPaid',
+  UnPaid = 'unpaid',
 }
 
 export enum PaymentMethodType {}
@@ -35,6 +35,7 @@ export enum PaymentMethodCode {
 // Constants
 export const LIMIT_PAGINATION = 9;
 export const CITY_LIMIT_PAGINATION = 20;
+export const ORDER_LIMIT_PAGINATION = 10;
 export const OFFSET_PAGINATION = 0;
 export const IS_PUBLIC_KEY = 'isPublic';
 export const REGEX_USERNAME = /^[a-zA-Z0-9]+$/;

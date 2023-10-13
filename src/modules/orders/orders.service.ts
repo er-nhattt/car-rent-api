@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as moment from 'moment';
 import {
   PromoType,
@@ -6,13 +7,16 @@ import {
   OrderError,
   CarError,
   CityType,
+  ORDER_LIMIT_PAGINATION,
+  SystemError,
 } from 'src/common/constants';
-import { ChildError } from 'src/common/error/app.error';
+import { ApplicationError, ChildError } from 'src/common/error/app.error';
 import {
   Between,
   EntityManager,
   LessThanOrEqual,
   MoreThanOrEqual,
+  Repository,
 } from 'typeorm';
 import { CarCity } from '../cars/entities/car-city.entity';
 import { Car } from '../cars/entities/car.entity';
@@ -20,12 +24,18 @@ import { PaymentMethod } from '../payment-methods/entities/payment-method.entity
 import { Promo } from '../promos/entities/promo.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { GetOrdersDto } from './dto/get-orders.dto';
 import { OrderDetail } from './entities/order-detail.entity';
 import { Order } from './entities/order.entity';
 
 @Injectable()
 export class OrdersService {
-  constructor() {}
+  constructor(
+    @InjectRepository(Order)
+    private ordersRepository: Repository<Order>,
+    @InjectRepository(OrderDetail)
+    private orderDetailsRepository: Repository<OrderDetail>,
+  ) {}
 
   async validateOrder(createOrderDto: CreateOrderDto, manager: EntityManager) {
     const childErrors: ChildError[] = [];
@@ -91,7 +101,7 @@ export class OrdersService {
         field: 'drop_off_at',
       });
     } else {
-      if (moment().diff(createOrderDto.pick_up_at, 'hours') > -24) {
+      if (moment().diff(createOrderDto.pick_up_at, 'hours') > -23) {
         validDatetime = false;
         childErrors.push({
           key: OrderError.RENTAL_TIME_IN_PAST,
@@ -99,7 +109,7 @@ export class OrdersService {
         });
       }
 
-      if (moment().diff(createOrderDto.drop_off_at, 'hours') > -24) {
+      if (moment().diff(createOrderDto.drop_off_at, 'hours') > -23) {
         validDatetime = false;
         childErrors.push({
           key: OrderError.RENTAL_TIME_IN_PAST,
@@ -241,5 +251,103 @@ export class OrdersService {
     }
 
     return totalPrice;
+  }
+
+  async getOrdersByUser(
+    getOrdersDto: GetOrdersDto,
+    languageCode: string,
+    user: User,
+  ) {
+    const offset = ORDER_LIMIT_PAGINATION * (getOrdersDto.page - 1);
+    const [data, total] = await this.ordersRepository.findAndCount({
+      where: {
+        userId: user.id,
+        details: {
+          car: {
+            languages: {
+              languageCode,
+            },
+            carTypes: {
+              carType: {
+                languages: {
+                  languageCode,
+                },
+              },
+            },
+          },
+        },
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+      skip: offset,
+      take: ORDER_LIMIT_PAGINATION,
+      relations: {
+        details: {
+          car: {
+            languages: true,
+            carTypes: {
+              carType: {
+                languages: true,
+              },
+            },
+          },
+          pickUpCity: true,
+          dropOffCity: true,
+        },
+      },
+    });
+
+    return {
+      items: data,
+      pagination: {
+        total,
+        offset,
+        limit: ORDER_LIMIT_PAGINATION,
+      },
+    };
+  }
+
+  async getOrderById(orderId: number, languageCode: string, user: User) {
+    const order = await this.ordersRepository.findOne({
+      where: {
+        userId: user.id,
+        id: orderId,
+        details: {
+          car: {
+            languages: {
+              languageCode,
+            },
+            carTypes: {
+              carType: {
+                languages: {
+                  languageCode,
+                },
+              },
+            },
+          },
+        },
+      },
+      relations: {
+        details: {
+          car: {
+            languages: true,
+            carTypes: {
+              carType: {
+                languages: true,
+              },
+            },
+          },
+          pickUpCity: true,
+          dropOffCity: true,
+        },
+      },
+    });
+
+    if (!order) {
+      throw new ApplicationError(SystemError.OBJECT_NOT_FOUND);
+    }
+
+    return order;
   }
 }

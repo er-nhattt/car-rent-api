@@ -31,6 +31,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       password: mysqlConfig.password,
       database: mysqlConfig.database,
       synchronize: mysqlConfig.synchronize,
+      logging: true,
       entities: [
         Token,
         CarType,

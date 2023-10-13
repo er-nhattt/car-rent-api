@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LIMIT_PAGINATION } from 'src/common/constants';
-import { Repository } from 'typeorm';
+import { LIMIT_PAGINATION, OrderStatus } from 'src/common/constants';
+import { EntityManager, Repository } from 'typeorm';
+import { Order } from '../orders/entities/order.entity';
 import { GetPaymentMethodDto } from './dto/get-payment-methods.dto';
 import { PaymentMethod } from './entities/payment-method.entity';
 
@@ -28,5 +29,22 @@ export class PaymentMethodsService {
         limit: LIMIT_PAGINATION,
       },
     };
+  }
+
+  async paymentByCod(orderId: number, manager: EntityManager) {
+    await manager.update(
+      Order,
+      { id: orderId },
+      {
+        status: OrderStatus.UnPaid,
+      },
+    );
+    const order = await manager.findOne(Order, {
+      where: {
+        id: orderId,
+      },
+    });
+
+    return order;
   }
 }
