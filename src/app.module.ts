@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CarsModule } from './modules/cars/cars.module';
 import { ImagesModule } from './modules/images/images.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -15,7 +15,10 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { typeOrmAsyncConfig } from './config/database/mysql/typeorm.config';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { MysqlConfigModule } from './config/database/mysql/config.module';
-
+import { CacheConfigService } from './config/cache/config.service';
+import { CacheConfigModule } from './config/cache/config.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-redis-store';
 @Module({
   imports: [
     MysqlConfigModule,
@@ -32,6 +35,19 @@ import { MysqlConfigModule } from './config/database/mysql/config.module';
         { use: QueryResolver, options: ['lang'] },
         AcceptLanguageResolver,
       ],
+    }),
+    CacheModule.registerAsync({
+      imports: [CacheConfigModule],
+      inject: [CacheConfigService],
+      isGlobal: true,
+      useFactory: (cacheConfig: CacheConfigService) => ({
+        ttl: cacheConfig.ttl,
+        max: cacheConfig.max,
+        store: redisStore,
+        host: cacheConfig.host,
+        port: cacheConfig.port,
+        prefix: cacheConfig.prefix,
+      }),
     }),
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     CarsModule,

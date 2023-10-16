@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Param, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
@@ -10,6 +10,7 @@ import { CarsService } from './cars.service';
 import { CarDetailDto } from './dto/car-detail.dto';
 import { CarsDto } from './dto/cars.dto';
 import { GetCarsFilterDto } from './dto/get-cars-filter.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('Cars')
 @Controller({
@@ -22,6 +23,7 @@ export class CarsController {
   @UseGuards(JwtAuthGuard)
   @Public()
   @Serialize(CarsDto)
+  @UseInterceptors(CacheInterceptor)
   async getCars(
     @Query() filterDto: GetCarsFilterDto,
     @I18n() i18n: I18nContext,
@@ -35,6 +37,7 @@ export class CarsController {
   @UseGuards(JwtAuthGuard)
   @Public()
   @Serialize(CarDetailDto)
+  @UseInterceptors(CacheInterceptor)
   async getCarById(
     @Param('id') id: number,
     @I18n() i18n: I18nContext,
