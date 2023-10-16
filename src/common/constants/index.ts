@@ -19,7 +19,7 @@ export enum OrderStatus {
   UnPaid = 'unpaid',
 }
 
-export enum PaymentMethodType {}
+export enum PaymentMethodType { }
 
 export enum PromoType {
   Absolute = 'absolute',
@@ -32,6 +32,12 @@ export enum PaymentMethodCode {
   Paypal = 'paypal',
 }
 
+export enum LoggerType {
+  REQUEST = 'REQUEST',
+  RESPONSE = 'RESPONSE',
+  ERROR = 'ERROR',
+}
+
 // Constants
 export const LIMIT_PAGINATION = 9;
 export const CITY_LIMIT_PAGINATION = 20;
@@ -39,6 +45,19 @@ export const ORDER_LIMIT_PAGINATION = 10;
 export const OFFSET_PAGINATION = 0;
 export const IS_PUBLIC_KEY = 'isPublic';
 export const REGEX_USERNAME = /^[a-zA-Z0-9]+$/;
+export const SENSITIVE_FIELD = [
+  'headers.Authorization',
+  'headers.authorization',
+  'body.token',
+  'body.public_key',
+  'body.password',
+  'body.order_token',
+  'body.access_token',
+  'body.refresh_token',
+  'access_token',
+  'refresh_token',
+  'headers.X-HTTP-Service-Token',
+  'headers.x-api-signature']
 
 // Error code
 export const CarError = {

@@ -19,6 +19,7 @@ import { CacheConfigService } from './config/cache/config.service';
 import { CacheConfigModule } from './config/cache/config.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
+import { LoggerModule } from './shared/logger/logger.module';
 @Module({
   imports: [
     MysqlConfigModule,
@@ -48,6 +49,14 @@ import * as redisStore from 'cache-manager-redis-store';
         port: cacheConfig.port,
         prefix: cacheConfig.prefix,
       }),
+    }),
+    LoggerModule.register({
+      logLevel: 'info',
+      requestFileName: 'logs/request/%DATE%.log',
+      responseFileName: 'logs/response/%DATE%.log',
+      errorFileName: 'logs/error/%DATE%.log',
+      datePattern: 'YYYY-MM-DD',
+      maxFiles: 1000000,
     }),
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     CarsModule,
