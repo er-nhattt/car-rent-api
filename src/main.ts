@@ -7,6 +7,7 @@ import { ValidationExceptionFilter } from './common/exceptions/validation-except
 import { LoggerService } from './shared/logger/logger.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { VersioningType } from '@nestjs/common/enums';
+import { InternalExceptionFilter } from './common/exceptions/internal-exception.fiter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,11 @@ async function bootstrap() {
       stopAtFirstError: true,
       transform: true,
     }),
+  );
+  app.useGlobalFilters(
+    new InternalExceptionFilter(
+      new LoggerService(app.get(WINSTON_MODULE_NEST_PROVIDER)),
+    ),
   );
   app.useGlobalFilters(
     new ApplicationExceptionFilter(
