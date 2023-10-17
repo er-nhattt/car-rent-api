@@ -31,10 +31,20 @@
 ```bash
 $ npm install
 ```
+- Mysql
+- Redis
+
 
 ## Running the app
 
 ```bash
+# migration 
+$ npm run migration:generate -- src/database/migrations/CreateDB
+$ npm run migration:run
+
+# seed 
+$ npm run seed
+
 # development
 $ npm run start
 
