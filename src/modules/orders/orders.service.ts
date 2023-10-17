@@ -56,6 +56,7 @@ export class OrdersService {
 
     const car = await manager.findOne(Car, {
       where: { id: createOrderDto.car_ids[0] },
+      lock: { mode: 'pessimistic_write' },
     });
     if (!car) {
       childErrors.push({

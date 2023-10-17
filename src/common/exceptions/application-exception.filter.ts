@@ -2,9 +2,12 @@ import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { Response } from 'express';
 import { I18nContext } from 'nestjs-i18n';
 import { ApplicationError, ChildError } from '../error/app.error';
+import { LoggerService } from 'src/shared/logger/logger.service';
 
 @Catch(ApplicationError)
 export class ApplicationExceptionFilter implements ExceptionFilter {
+  constructor(private loggerService: LoggerService) {}
+  
   catch(exception: ApplicationError, host: ArgumentsHost) {
     const i18n = I18nContext.current(host);
     const response = host.switchToHttp().getResponse<Response>();
@@ -19,6 +22,7 @@ export class ApplicationExceptionFilter implements ExceptionFilter {
         errors: this.getChildErrors(exception.childErrors, i18n),
       },
     };
+    this.loggerService.logError(host, status, errorResponse, exception);
 
     response.status(status).json(errorResponse);
   }

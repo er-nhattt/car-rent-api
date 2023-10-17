@@ -2,10 +2,11 @@ import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { I18nContext, I18nValidationException } from 'nestjs-i18n';
 import { Response } from 'express';
 import { ValidationError } from 'class-validator';
+import { LoggerService } from 'src/shared/logger/logger.service';
 
 @Catch(I18nValidationException)
 export class ValidationExceptionFilter implements ExceptionFilter {
-  constructor() {}
+  constructor(private loggerService: LoggerService) {}
 
   catch(exception: I18nValidationException, host: ArgumentsHost) {
     const i18n = I18nContext.current(host);
@@ -22,7 +23,8 @@ export class ValidationExceptionFilter implements ExceptionFilter {
         errors: this.getChildErrors(errors, i18n),
       },
     };
-
+    this.loggerService.logError(host, status, body, exception);
+    
     response.status(status).json(body);
   }
 
