@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 
-import { orderStatus } from 'src/common/constants';
+import { OrderStatus } from 'src/common/constants';
 import { BaseEntityAbstract } from 'src/common/entities/base.entity';
 import { PaymentMethod } from 'src/modules/payment-methods/entities/payment-method.entity';
 import { User } from 'src/modules/users/entities/user.entity';
@@ -43,29 +43,26 @@ export class Order extends BaseEntityAbstract {
   @Column({ name: 'promo_type', nullable: true })
   promoType: string;
 
-  @Column({ nullable: true })
-  discount: string;
+  @Column({ nullable: true, type: 'float' })
+  discount: number;
 
   @Column({ name: 'payment_method_code', nullable: true })
   paymentMethodCode: string;
 
   @ManyToOne(() => PaymentMethod, (paymentMethod) => paymentMethod.orders, {
-    createForeignKeyConstraints: false
+    createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'payment_method_code', referencedColumnName: 'code' })
   paymentMethod: PaymentMethod;
 
-  @Column({ name: 'payment_method_type', nullable: true })
-  paymentMethodType: string;
-
   @Column({ name: 'total_price', nullable: true })
   totalPrice: number;
 
-  @Column({ type: 'enum', enum: orderStatus, nullable: true })
-  status: orderStatus;
+  @Column({ type: 'enum', enum: OrderStatus, nullable: true })
+  status: OrderStatus;
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order, {
-    createForeignKeyConstraints: false
+    createForeignKeyConstraints: false,
   })
-  orderDetails: OrderDetail[];
+  details: OrderDetail[];
 }

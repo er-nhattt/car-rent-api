@@ -1,8 +1,7 @@
-
 import { BaseEntityAbstract } from 'src/common/entities/base.entity';
 import { Car } from 'src/modules/cars/entities/car.entity';
 import { User } from 'src/modules/users/entities/user.entity';
-import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity('favourites')
 export class Favourite extends BaseEntityAbstract {

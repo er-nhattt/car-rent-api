@@ -5,11 +5,11 @@ import { OrderDetail } from 'src/modules/orders/entities/order-detail.entity';
 import { CarCarType } from './car-car-type.entity';
 import { CarCity } from './car-city.entity';
 import { CarLanguage } from './car-language.entity';
-import { Image } from 'src/modules/images/entities/image.entity'; 
+import { Image } from 'src/modules/images/entities/image.entity';
 
 @Entity('cars')
 export class Car extends BaseEntityAbstract {
-  @Column()
+  @Column({ name: 'thumbnail_url', nullable: true, type: 'text' })
   thumbnailUrl: string;
 
   @Column({ nullable: true })
@@ -19,10 +19,10 @@ export class Car extends BaseEntityAbstract {
   @Column({ nullable: true })
   gasoline: number;
 
-  @Column({ name: 'old_price', nullable: true })
+  @Column({ name: 'old_price', nullable: true, type: 'float' })
   oldPrice: number;
 
-  @Column({ name: 'new_price', nullable: true })
+  @Column({ name: 'new_price', nullable: true, type: 'float' })
   @Index('idx_cars_new_price')
   newPrice: number;
 

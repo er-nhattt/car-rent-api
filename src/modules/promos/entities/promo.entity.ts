@@ -12,9 +12,9 @@ export class Promo extends BaseEntityAbstract {
   @Column({ type: 'enum', nullable: true, enum: PromoType })
   type: PromoType;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'float' })
   discount: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   quantity: number;
 }

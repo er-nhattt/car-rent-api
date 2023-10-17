@@ -1,4 +1,3 @@
-
 import { BaseEntityAbstract } from 'src/common/entities/base.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import { Entity, ManyToOne, JoinColumn, Column } from 'typeorm';

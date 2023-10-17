@@ -1,6 +1,6 @@
 import { DataSourceOptions } from 'typeorm';
 
-export function getConfig() {
+export function getConfigDataSource() {
   return {
     type: 'mysql',
     host: 'localhost',
@@ -10,9 +10,10 @@ export function getConfig() {
     database: 'car_rent',
     synchronize: false,
     entities: [__dirname + './../**/*.entity{.ts,.js}'],
-    migrations: [
-      __dirname + './migrations/*{.ts,.js}',
-      __dirname + 'dist/migrations/*{.ts,.js}',
-    ],
+    migrations: ['dist/database/migrations/*.{ts,js}'],
+    cli: {
+      migrationsDir: 'src/database/migrations',
+    },
+    migrationsTableName: 'migrations',
   } as DataSourceOptions;
 }

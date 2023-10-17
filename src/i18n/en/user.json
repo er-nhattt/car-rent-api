@@ -1,0 +1,58 @@
+{
+  "CUS-0403": {
+    "http_code": "401",
+    "app_code": "UNAUTHORIZED_ACCESS",
+    "title": "User not authenticated",
+    "prod": "User authentication is not done. You need to log in again.",
+    "inter": "User authentication is not done. You need to log in again."
+  },
+  "USE-0001": {
+    "http_code": "400",
+    "app_code": "INVALID_PARAMETER",
+    "title": "Must be an email.",
+    "prod": "Must be an email.",
+    "inter": "Must be an email."
+  },
+  "USE-0002": {
+    "http_code": "400",
+    "app_code": "INVALID_PARAMETER",
+    "title": "Password is too weak.",
+    "prod": "Password must be at least 8 characters long.",
+    "inter": "Password must be at least 8 characters long."
+  },
+  "USE-0003": {
+    "http_code": "400",
+    "app_code": "INVALID_PARAMETER",
+    "title": "Wrong credentials.",
+    "prod": "Invalid username or password.",
+    "inter": "Invalid username or password."
+  },
+  "USE-0006": {
+    "http_code": "400",
+    "app_code": "CONFLICT",
+    "title": "Username already exists",
+    "prod": "Username already exists. Please try again",
+    "inter": "Username already exists. Please try again"
+  },
+  "USE-0007": {
+    "http_code": "404",
+    "app_code": "OBJECT_NOT_FOUND",
+    "title": "User not found.",
+    "prod": "User not found.",
+    "inter": "User not found."
+  },
+  "USE-0008": {
+    "http_code": "400",
+    "app_code": "BAD_REQUEST",
+    "title": "Signup failed",
+    "prod": "Signup failed",
+    "inter": "Signup failed"
+  },
+  "CUS-0405": {
+    "http_code": "401",
+    "app_code": "UNAUTHORIZED_ACCESS",
+    "title": "User not authenticated",
+    "prod": "The expiration date of user authentication has expired.Please start over again from the beginning.",
+    "inter": "The expiration date of user authentication has expired.Please start over again from the beginning."
+  }
+}

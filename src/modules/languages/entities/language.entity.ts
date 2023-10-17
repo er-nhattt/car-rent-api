@@ -10,6 +10,9 @@ export class Language extends BaseEntityAbstract {
   @Index('idx_languages_code', { unique: true })
   code: string;
 
+  @Column({ nullable: true })
+  name: string;
+
   @OneToMany(() => CarLanguage, (carLanguage) => carLanguage.language, {
     createForeignKeyConstraints: false,
   })

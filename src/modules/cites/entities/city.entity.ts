@@ -5,18 +5,13 @@ import { CarCity } from 'src/modules/cars/entities/car-city.entity';
 
 @Entity('cities')
 export class City extends BaseEntityAbstract {
-  @Column({ nullable: true})
+  @Column({ nullable: true })
   name: string;
 
-  @OneToMany(() => CarCity, (carCity) => carCity.pickUpCity, {
+  @OneToMany(() => CarCity, (carCity) => carCity.city, {
     createForeignKeyConstraints: false,
   })
-  pickUpCars: CarCity[];
-
-  @OneToMany(() => CarCity, (carCity) => carCity.dropOffCity, {
-    createForeignKeyConstraints: false,
-  })
-  dropOffCars: CarCity[];
+  carCity: CarCity[];
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.pickUpCity, {
     createForeignKeyConstraints: false,
