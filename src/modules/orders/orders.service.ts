@@ -39,7 +39,6 @@ export class OrdersService {
 
   async validateOrder(createOrderDto: CreateOrderDto, manager: EntityManager) {
     const childErrors: ChildError[] = [];
-    let validDatetime = true;
     if (!createOrderDto.order_name) {
       childErrors.push({
         key: OrderError.CAN_NOT_ORDER,
@@ -56,7 +55,6 @@ export class OrdersService {
 
     const car = await manager.findOne(Car, {
       where: { id: createOrderDto.car_ids[0] },
-      lock: { mode: 'pessimistic_write' },
     });
     if (!car) {
       childErrors.push({
@@ -96,14 +94,12 @@ export class OrdersService {
     }
 
     if (createOrderDto.pick_up_at >= createOrderDto.drop_off_at) {
-      validDatetime = false;
       childErrors.push({
         key: OrderError.INVALID_RENTAL_TIME,
         field: 'drop_off_at',
       });
     } else {
       if (moment().diff(createOrderDto.pick_up_at, 'hours') > -23) {
-        validDatetime = false;
         childErrors.push({
           key: OrderError.RENTAL_TIME_IN_PAST,
           field: 'pick_up_at',
@@ -111,33 +107,10 @@ export class OrdersService {
       }
 
       if (moment().diff(createOrderDto.drop_off_at, 'hours') > -23) {
-        validDatetime = false;
         childErrors.push({
           key: OrderError.RENTAL_TIME_IN_PAST,
           field: 'drop_off_at',
         });
-      }
-    }
-
-    if (validDatetime) {
-      const orderConflict = await this.checkCarHasBeenRentAtTime(
-        car.id,
-        createOrderDto.pick_up_at,
-        createOrderDto.drop_off_at,
-        manager,
-      );
-
-      if (orderConflict) {
-        childErrors.push(
-          {
-            key: OrderError.CONFLICT_RENTAL_TIME,
-            field: 'pick_up_at',
-          },
-          {
-            key: OrderError.CONFLICT_RENTAL_TIME,
-            field: 'drop_off_at',
-          },
-        );
       }
     }
 
@@ -157,7 +130,7 @@ export class OrdersService {
     return childErrors;
   }
 
-  async checkCarHasBeenRentAtTime(
+  async checkCarAvailableAtTime(
     carId: number,
     pickUpAt: Date,
     dropOffAt: Date,
@@ -193,10 +166,33 @@ export class OrdersService {
   async createOrder(
     createOrderDto: CreateOrderDto,
     user: User,
-    car: Car,
     promo: Promo | null,
     manager: EntityManager,
   ): Promise<Order> {
+    const car = await manager.findOne(Car, {
+      where: { id: createOrderDto.car_ids[0] },
+    });
+
+    const orderConflict = await this.checkCarAvailableAtTime(
+      car.id,
+      createOrderDto.pick_up_at,
+      createOrderDto.drop_off_at,
+      manager,
+    );
+
+    if (orderConflict) {
+      throw new ApplicationError(OrderError.CAN_NOT_ORDER, [
+        {
+          key: OrderError.CONFLICT_RENTAL_TIME,
+          field: 'pick_up_at',
+        },
+        {
+          key: OrderError.CONFLICT_RENTAL_TIME,
+          field: 'drop_off_at',
+        },
+      ]);
+    }
+
     const order = await manager.save(Order, {
       userId: user.id,
       orderName: createOrderDto.order_name,

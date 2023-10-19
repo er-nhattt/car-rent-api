@@ -10,7 +10,6 @@ export class OrderDetailDto {
   @Expose()
   @Transform(({ obj }) => _.get(obj, 'car.languages[0].name', null))
   name: string;
-  car: any;
 
   @Expose()
   @Transform(({ obj }) =>

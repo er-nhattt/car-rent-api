@@ -31,7 +31,11 @@ export class PaymentMethodsService {
     };
   }
 
-  async paymentByCod(orderId: number, manager: EntityManager) {
+  async paymentByCod(
+    orderId: number,
+    manager: EntityManager,
+    languageCode: string,
+  ) {
     await manager.update(
       Order,
       { id: orderId },
@@ -42,6 +46,34 @@ export class PaymentMethodsService {
     const order = await manager.findOne(Order, {
       where: {
         id: orderId,
+        details: {
+          car: {
+            languages: {
+              languageCode,
+            },
+            carTypes: {
+              carType: {
+                languages: {
+                  languageCode,
+                },
+              },
+            },
+          },
+        },
+      },
+      relations: {
+        details: {
+          car: {
+            languages: true,
+            carTypes: {
+              carType: {
+                languages: true,
+              },
+            },
+          },
+          pickUpCity: true,
+          dropOffCity: true,
+        },
       },
     });
 

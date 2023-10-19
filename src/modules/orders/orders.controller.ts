@@ -9,13 +9,17 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
-import { OrderError, PaymentMethodCode } from 'src/common/constants';
+import {
+  OrderError,
+  OrderStatus,
+  PaymentMethodCode,
+} from 'src/common/constants';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { ApplicationError, ChildError } from 'src/common/error/app.error';
 import { Serialize } from 'src/common/interceptors/tranform-interceptor';
+import { MailService } from 'src/shared/mailer/mail.service';
 import { DataSource } from 'typeorm';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Car } from '../cars/entities/car.entity';
 import { PaymentMethodsService } from '../payment-methods/payment-methods.service';
 import { User } from '../users/entities/user.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -35,6 +39,7 @@ export class OrdersController {
     private readonly ordersService: OrdersService,
     private readonly paymentMethodsService: PaymentMethodsService,
     private readonly dataSource: DataSource,
+    private mailService: MailService,
   ) {}
 
   @Post('')
@@ -45,43 +50,48 @@ export class OrdersController {
     @Body() createOrderDto: CreateOrderDto,
     @CurrentUser() user: User,
   ) {
+    let childErrors: ChildError[] = [];
     const queryRunner = this.dataSource.createQueryRunner();
+
+    childErrors = await this.ordersService.validateOrder(
+      createOrderDto,
+      queryRunner.manager,
+    );
+
+    if (childErrors.length) {
+      throw new ApplicationError(OrderError.CAN_NOT_ORDER, childErrors);
+    }
+    let promo = null;
+
     await queryRunner.connect();
     await queryRunner.startTransaction();
-    let childErrors: ChildError[] = [];
-    try {
-      childErrors = await this.ordersService.validateOrder(
-        createOrderDto,
-        queryRunner.manager,
-      );
-      if (childErrors.length) {
-        throw new ApplicationError(OrderError.CAN_NOT_ORDER, childErrors);
-      }
-      const car = await queryRunner.manager.findOne(Car, {
-        where: { id: createOrderDto.car_ids[0] },
-      });
 
-      let promo = null;
+    try {
       const order = await this.ordersService.createOrder(
         createOrderDto,
         user,
-        car,
         promo,
         queryRunner.manager,
       );
-      let result: Promise<Order>;
+      let result: any;
       switch (createOrderDto.payment_method_code) {
         case PaymentMethodCode.Cod:
-          result = this.paymentMethodsService.paymentByCod(
+          result = await this.paymentMethodsService.paymentByCod(
             order.id,
             queryRunner.manager,
+            'en',
           );
           break;
         default:
           childErrors;
           throw new ApplicationError(OrderError.CAN_NOT_ORDER);
       }
-
+      if (
+        result.status == OrderStatus.UnPaid ||
+        result.status == OrderStatus.Paid
+      ) {
+        await this.mailService.sendOrderInformationMail(result, user);
+      }
       await queryRunner.commitTransaction();
       return result;
     } catch (error) {

@@ -1,5 +1,5 @@
 import { Exclude, Expose, Type } from 'class-transformer';
-import { PaginationResponseDto } from 'src/common/dto/paginationResponse.dto';
+import { PaginationResponseDto } from 'src/common/dto/pagination-response.dto';
 import { OrderDto } from './order.dto';
 
 @Exclude()

@@ -1,7 +1,12 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { CarsModule } from './modules/cars/cars.module';
 import { ImagesModule } from './modules/images/images.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -20,6 +25,10 @@ import { CacheConfigModule } from './config/cache/config.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import { LoggerModule } from './shared/logger/logger.module';
+import { MailModule } from './shared/mailer/mail.module';
+import { QueueConfigModule } from './config/queue/config.module';
+import { QueueConfigService } from './config/queue/config.service';
+import { BullModule } from '@nestjs/bull';
 @Module({
   imports: [
     MysqlConfigModule,
@@ -36,6 +45,20 @@ import { LoggerModule } from './shared/logger/logger.module';
         { use: QueryResolver, options: ['lang'] },
         AcceptLanguageResolver,
       ],
+    }),
+    BullModule.forRootAsync({
+      imports: [QueueConfigModule],
+      inject: [QueueConfigService],
+      useFactory: async (queueConfig: QueueConfigService) => ({
+        redis: {
+          host: 'localhost',
+          port: 6379,
+        },
+        prefix: queueConfig.prefix,
+      }),
+    }),
+    BullModule.registerQueue({
+      name: 'mail',
     }),
     CacheModule.registerAsync({
       imports: [CacheConfigModule],
@@ -70,6 +93,7 @@ import { LoggerModule } from './shared/logger/logger.module';
     PaymentMethodsModule,
     PromosModule,
     ReviewsModule,
+    MailModule,
   ],
 })
 export class AppModule {}

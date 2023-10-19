@@ -1,16 +1,23 @@
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PaymentMethod } from '../payment-methods/entities/payment-method.entity';
+import { MailModule } from 'src/shared/mailer/mail.module';
+import { MailService } from 'src/shared/mailer/mail.service';
+import { Car } from '../cars/entities/car.entity';
+import { City } from '../cites/entities/city.entity';
 import { PaymentMethodsModule } from '../payment-methods/payment-methods.module';
-import { PaymentMethodsService } from '../payment-methods/payment-methods.service';
 import { OrderDetail } from './entities/order-detail.entity';
 import { Order } from './entities/order.entity';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, OrderDetail]), PaymentMethodsModule],
+  imports: [
+    TypeOrmModule.forFeature([Order, OrderDetail, Car]),
+    PaymentMethodsModule,
+    BullModule.registerQueue({ name: 'mail' }),
+  ],
   controllers: [OrdersController],
-  providers: [OrdersService],
+  providers: [OrdersService, MailService],
 })
 export class OrdersModule {}

@@ -28,6 +28,8 @@
     "seed": "ts-node -r tsconfig-paths/register src/seed.ts"
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "1.9.1",
+    "@nestjs/bull": "10.0.1",
     "@nestjs/cache-manager": "2.1.0",
     "@nestjs/class-transformer": "0.4.0",
     "@nestjs/common": "10.0.0",
@@ -38,6 +40,7 @@
     "@nestjs/platform-express": "10.0.0",
     "@nestjs/swagger": "7.1.11",
     "@nestjs/typeorm": "10.0.0",
+    "@types/cache-manager": "4.0.4",
     "@types/lodash": "4.14.199",
     "bcrypt": "5.1.1",
     "bull": "4.10.2",
@@ -50,6 +53,7 @@
     "mysql2": "3.6.1",
     "nest-winston": "1.9.4",
     "nestjs-i18n": "10.3.5",
+    "nodemailer": "6.9.6",
     "passport": "0.6.0",
     "passport-jwt": "4.0.1",
     "passport-local": "1.0.0",
