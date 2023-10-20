@@ -22,32 +22,40 @@ export class AuthService {
 
   async generateTokens(user: User, tokenId: number) {
     const { hashedPassword, ...restUser } = user;
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync({
-        tokenId,
-        user: restUser,
-        expriedAt: moment()
-          .add(process.env.JWT_EXPIRED_ACCESS_TOKEN_IN, 's')
-          .format(),
-      }),
-      this.jwtService.signAsync({
-        tokenId,
-        userId: user.id,
-        expriedAt: moment()
-          .add(process.env.JWT_EXPIRED_REFRESH_TOKEN_IN, 's')
-          .format(),
-      }),
-    ]);
+
+    const expiredAccessTokenAt = moment()
+      .add(process.env.JWT_EXPIRED_ACCESS_TOKEN_IN, 's')
+      .format();
+
+    const accessToken = await this.jwtService.signAsync({
+      tokenId,
+      user: restUser,
+      expiredAt: expiredAccessTokenAt,
+    });
+
+    const expiredRefreshTokenAt = moment()
+      .add(process.env.JWT_EXPIRED_REFRESH_TOKEN_IN, 's')
+      .format();
+
+    const refreshToken = await this.jwtService.signAsync({
+      tokenId,
+      user: restUser,
+      expiredAt: expiredRefreshTokenAt,
+    });
 
     return {
       accessToken,
+      expiredAccessTokenAt,
       refreshToken,
+      expiredRefreshTokenAt,
     };
   }
 
   async login(loginDto: LoginDto): Promise<{
     access_token: string;
+    expired_access_token_at: string;
     refresh_token: string;
+    expired_refresh_token_at: string;
   }> {
     const user: User = await this.usersRepository.findOne({
       where: { username: loginDto.username },
@@ -78,7 +86,9 @@ export class AuthService {
 
     return {
       access_token: generateTokens.accessToken,
+      expired_access_token_at: generateTokens.expiredAccessTokenAt,
       refresh_token: generateTokens.refreshToken,
+      expired_refresh_token_at: generateTokens.expiredRefreshTokenAt,
     };
   }
 
