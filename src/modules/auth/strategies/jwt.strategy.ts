@@ -9,7 +9,7 @@ import { ApplicationError } from 'src/common/error/app.error';
 import { TokenError, UserError } from 'src/common/constants';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     @InjectRepository(Token)
     private tokensRepository: Repository<Token>,
@@ -52,7 +52,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new ApplicationError(TokenError.TOKEN_NOT_FOUND);
     }
 
-    if (new Date(payload.expriedAt) < new Date()) {
+    if (new Date(payload.expiredAt) < new Date()) {
       throw new ApplicationError(TokenError.TOKEN_EXPIRED);
     }
 

@@ -5,6 +5,7 @@ import { GetPaymentMethodDto } from './dto/get-payment-methods.dto';
 import { PaymentMethodsDto } from './dto/payment-methods.dto';
 import { PaymentMethodsService } from './payment-methods.service';
 import { CacheInterceptor } from '@nestjs/cache-manager';
+import { CustomCacheInterceptor } from 'src/common/interceptors/cache.interceptor';
 
 @ApiTags('Payment methodss')
 @Controller({
@@ -15,7 +16,7 @@ export class PaymentMethodsController {
 
   @Get('')
   @Serialize(PaymentMethodsDto)
-  @UseInterceptors(CacheInterceptor)
+  @UseInterceptors(CustomCacheInterceptor)
   async getPaymentMethods(@Query() getPaymentMethodDto: GetPaymentMethodDto) {
     const result = await this.paymentMethodsService.getPaymentMethods(
       getPaymentMethodDto,

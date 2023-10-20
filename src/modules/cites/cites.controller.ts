@@ -5,6 +5,7 @@ import { CitiesService } from './cities.service';
 import { CitiesDto } from './dto/cities.dto';
 import { GetCitiesDto } from './dto/get-cities.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
+import { CustomCacheInterceptor } from 'src/common/interceptors/cache.interceptor';
 
 @ApiTags('Cities')
 @Controller({
@@ -15,7 +16,7 @@ export class CitiesController {
 
   @Get('')
   @Serialize(CitiesDto)
-  @UseInterceptors(CacheInterceptor)
+  @UseInterceptors(CustomCacheInterceptor)
   async getCities(@Query() getCitiesDto: GetCitiesDto) {
     const result = await this.citiesService.getCities(getCitiesDto);
     return result;

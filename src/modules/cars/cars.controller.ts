@@ -11,6 +11,7 @@ import { CarDetailDto } from './dto/car-detail.dto';
 import { CarsDto } from './dto/cars.dto';
 import { GetCarsFilterDto } from './dto/get-cars-filter.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
+import { CustomCacheInterceptor } from 'src/common/interceptors/cache.interceptor';
 
 @ApiTags('Cars')
 @Controller({
@@ -23,7 +24,7 @@ export class CarsController {
   @UseGuards(JwtAuthGuard)
   @Public()
   @Serialize(CarsDto)
-  @UseInterceptors(CacheInterceptor)
+  @UseInterceptors(CustomCacheInterceptor)
   async getCars(
     @Query() filterDto: GetCarsFilterDto,
     @I18n() i18n: I18nContext,
@@ -37,12 +38,13 @@ export class CarsController {
   @UseGuards(JwtAuthGuard)
   @Public()
   @Serialize(CarDetailDto)
-  @UseInterceptors(CacheInterceptor)
+  @UseInterceptors(CustomCacheInterceptor)
   async getCarById(
     @Param('id') id: number,
     @I18n() i18n: I18nContext,
     @CurrentUser() user: User,
   ) {
+    console.log('id:', id);
     const result = await this.carsService.getCarById(id, i18n.lang, user);
     return result;
   }

@@ -6,6 +6,7 @@ import { CarTypesService } from './car-types.service';
 import { CarTypesDto } from './dto/car-types.dto';
 import { GetCarTypesDto } from './dto/get-car-type.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
+import { CustomCacheInterceptor } from 'src/common/interceptors/cache.interceptor';
 
 @ApiTags('Car types')
 @Controller({
@@ -16,7 +17,7 @@ export class CarTypesController {
 
   @Get('')
   @Serialize(CarTypesDto)
-  @UseInterceptors(CacheInterceptor)
+  @UseInterceptors(CustomCacheInterceptor)
   async getCarTypes(
     @Query() getCarTypesDto: GetCarTypesDto,
     @I18n() i18n: I18nContext,

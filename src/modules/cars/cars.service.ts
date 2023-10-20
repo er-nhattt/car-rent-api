@@ -3,9 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, LessThanOrEqual, Raw, Repository } from 'typeorm';
 import { Car } from './entities/car.entity';
 import { GetCarsFilterDto } from './dto/get-cars-filter.dto';
-import { CityType, LIMIT_PAGINATION } from 'src/common/constants';
+import { CarError, CityType, LIMIT_PAGINATION } from 'src/common/constants';
 import { Favourite } from '../favourites/entities/favourite.entity';
 import { User } from '../users/entities/user.entity';
+import { ApplicationError } from 'src/common/error/app.error';
 @Injectable()
 export class CarsService {
   constructor(
@@ -21,7 +22,6 @@ export class CarsService {
     languageCode: string,
     user: User,
   ) {
-  
     const offset = LIMIT_PAGINATION * (getCarsFilterDto.page - 1);
     const [data, total] = await this.carsRepository.findAndCount({
       where: {
@@ -131,6 +131,10 @@ export class CarsService {
         },
       },
     });
+
+    if (!result) {
+      throw new ApplicationError(CarError.CAR_NOT_FOUND);
+    }
 
     if (user) {
       const favourite = await this.favouritesRepository.findOne({
