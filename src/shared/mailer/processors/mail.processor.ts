@@ -8,7 +8,6 @@ import {
 } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
 import { Job } from 'bull';
-import { plainToInstance } from 'class-transformer';
 import { join } from 'path';
 import { MailConfigService } from 'src/config/mail/config.service';
 import { Order } from 'src/modules/orders/entities/order.entity';

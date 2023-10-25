@@ -18,7 +18,13 @@ import { PaymentMethodsModule } from './modules/payment-methods/payment-methods.
 import { PromosModule } from './modules/promos/promos.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { typeOrmAsyncConfig } from './config/database/mysql/typeorm.config';
-import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import {
+  AcceptLanguageResolver,
+  CookieResolver,
+  HeaderResolver,
+  I18nModule,
+  QueryResolver,
+} from 'nestjs-i18n';
 import { MysqlConfigModule } from './config/database/mysql/config.module';
 import { CacheConfigService } from './config/cache/config.service';
 import { CacheConfigModule } from './config/cache/config.module';
@@ -29,18 +35,23 @@ import { MailModule } from './shared/mailer/mail.module';
 import { QueueConfigModule } from './config/queue/config.module';
 import { QueueConfigService } from './config/queue/config.service';
 import { BullModule } from '@nestjs/bull';
+import { join } from 'path';
 @Module({
   imports: [
     MysqlConfigModule,
     ConfigModule.forRoot({
       envFilePath: ['.env'],
     }),
-    I18nModule.forRoot({
-      fallbackLanguage: 'en',
-      loaderOptions: {
-        path: 'src/i18n/',
-        watch: true,
-      },
+    I18nModule.forRootAsync({
+      useFactory: () => ({
+        fallbackLanguage: 'en',
+        loaderOptions: {
+          path: join(__dirname, '/i18n/'),
+          watch: true,
+        },
+        typesOutputPath: join(__dirname, './i18n/types/i18n.generated.ts'),
+      }),
+
       resolvers: [
         { use: QueryResolver, options: ['lang'] },
         AcceptLanguageResolver,

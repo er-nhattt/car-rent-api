@@ -10,9 +10,17 @@ export class MailService {
 
   async sendOrderInformationMail(order: Order, user: User) {
     console.log('Send mail ...');
-    await this.mailQueue.add('order-information', {
-      order,
-      user,
-    });
+    await this.mailQueue.add(
+      'order-information',
+      {
+        order,
+        user,
+      },
+      {
+        attempts: 3,
+        removeOnComplete: true,
+        removeOnFail: true
+      },
+    );
   }
 }

@@ -202,7 +202,7 @@ function getArgv() {
 
 function createJsonFiles(output, fileName, jsonData) {
   const { ja, en } = jsonData;
-  const jaFilePath = resolve(output, 'ja', `${fileName}.json`);
+  const jaFilePath = resolve(output, 'jp', `${fileName}.json`);
   const enFilePath = resolve(output, 'en', `${fileName}.json`);
   writeFile(jaFilePath, `${JSON.stringify(ja, null, TAB_SIZE)}\n`, (error) => {
     if (error) {

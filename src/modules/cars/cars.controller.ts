@@ -1,5 +1,12 @@
-import { Controller, Get, Query, Param, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -10,7 +17,6 @@ import { CarsService } from './cars.service';
 import { CarDetailDto } from './dto/car-detail.dto';
 import { CarsDto } from './dto/cars.dto';
 import { GetCarsFilterDto } from './dto/get-cars-filter.dto';
-import { CacheInterceptor } from '@nestjs/cache-manager';
 import { CustomCacheInterceptor } from 'src/common/interceptors/cache.interceptor';
 
 @ApiTags('Cars')
@@ -44,7 +50,6 @@ export class CarsController {
     @I18n() i18n: I18nContext,
     @CurrentUser() user: User,
   ) {
-    console.log('id:', id);
     const result = await this.carsService.getCarById(id, i18n.lang, user);
     return result;
   }
