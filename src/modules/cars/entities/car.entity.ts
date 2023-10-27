@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, Index } from 'typeorm';
+import { Entity, Column, OneToMany, Index, BeforeUpdate } from 'typeorm';
 import { BaseEntityAbstract } from 'src/common/entities/base.entity';
 import { Favourite } from 'src/modules/favourites/entities/favourite.entity';
 import { OrderDetail } from 'src/modules/orders/entities/order-detail.entity';
@@ -6,9 +6,23 @@ import { CarCarType } from './car-car-type.entity';
 import { CarCity } from './car-city.entity';
 import { CarLanguage } from './car-language.entity';
 import { Image } from 'src/modules/images/entities/image.entity';
+import { Inject } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Entity('cars')
 export class Car extends BaseEntityAbstract {
+  constructor(
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
+  ) {
+    super();
+  }
+
+  @BeforeUpdate()
+  clearCache() {
+    this.cacheManager.reset();
+  }
+
   @Column({ name: 'thumbnail_url', nullable: true, type: 'text' })
   thumbnailUrl: string;
 

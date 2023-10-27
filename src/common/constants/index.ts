@@ -19,7 +19,7 @@ export enum OrderStatus {
   UnPaid = 'unpaid',
 }
 
-export enum PaymentMethodType { }
+export enum PaymentMethodType {}
 
 export enum PromoType {
   Absolute = 'absolute',
@@ -42,6 +42,7 @@ export enum LoggerType {
 export const LIMIT_PAGINATION = 9;
 export const CITY_LIMIT_PAGINATION = 20;
 export const ORDER_LIMIT_PAGINATION = 10;
+export const REVIEW_LIMIT_PAGINATION = 5;
 export const OFFSET_PAGINATION = 0;
 export const IS_PUBLIC_KEY = 'isPublic';
 export const REGEX_USERNAME = /^[a-zA-Z0-9]+$/;
@@ -57,7 +58,8 @@ export const SENSITIVE_FIELD = [
   'access_token',
   'refresh_token',
   'headers.X-HTTP-Service-Token',
-  'headers.x-api-signature']
+  'headers.x-api-signature',
+];
 
 // Error code
 export const CarError = {
@@ -97,4 +99,10 @@ export const UserError = {
   USER_NOT_FOUND: 'user.USE-0007',
   SIGNUP_FAILURE: 'user.USE-0008',
   UNAUTHORIZED_ACCESS: 'user.CUS-0405',
+};
+
+export const ReviewError = {
+  NOT_RENT_YET: 'review.REV-0002',
+  REVIEW_ALREADY_EXISTED: 'review.REV-0003',
+  CAN_NOT_REVIEW: 'review.REV-0004'
 };

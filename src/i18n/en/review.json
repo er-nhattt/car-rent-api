@@ -1,0 +1,23 @@
+{
+    "REV-0002": {
+        "http_code": "400",
+        "app_code": "CONFLICT",
+        "title": "Cannot add your review to this car",
+        "prod": "Cannot review this car because you have not rented it yet!",
+        "inter": "Cannot review this car because you have not rented it yet!"
+    },
+    "REV-0003": {
+        "http_code": "400",
+        "app_code": "CONFLICT",
+        "title": "Only review the car one time",
+        "prod": "You have already review this car!",
+        "inter": "You have already review this car!"
+    },
+    "REV-0004": {
+        "http_code": "400",
+        "app_code": "BAD_REQUEST",
+        "title": "Add review failed",
+        "prod": "Add review failed!",
+        "inter": "Add review failed!"
+    }
+}

@@ -1,8 +1,6 @@
 import {
-  MiddlewareConsumer,
   Module,
-  NestModule,
-  RequestMethod,
+
 } from '@nestjs/common';
 import { CarsModule } from './modules/cars/cars.module';
 import { ImagesModule } from './modules/images/images.module';
@@ -20,8 +18,6 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { typeOrmAsyncConfig } from './config/database/mysql/typeorm.config';
 import {
   AcceptLanguageResolver,
-  CookieResolver,
-  HeaderResolver,
   I18nModule,
   QueryResolver,
 } from 'nestjs-i18n';

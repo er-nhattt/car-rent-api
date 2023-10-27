@@ -38,9 +38,6 @@ export class FavouritesService {
         }
       }
     }
-    return {
-      message: 'Favourite success',
-    };
   }
 
   async createFavourite(carId: number, user: User): Promise<Favourite> {

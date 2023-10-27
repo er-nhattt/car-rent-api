@@ -7,7 +7,10 @@ export class CustomCacheInterceptor extends CacheInterceptor {
     const request = context.switchToHttp().getRequest();
     const userId = request?.user?.id || '';
     const endpointURL = request.url;
+    const language = request.headers['accept-language'] || 'en';
 
-    return userId ? `/${userId}${endpointURL}` : endpointURL;
+    return userId
+      ? `/${userId}/${language}${endpointURL}`
+      : `/${language}${endpointURL}`;
   }
 }

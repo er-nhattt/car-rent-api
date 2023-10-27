@@ -1,4 +1,11 @@
-import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 import { BaseEntityAbstract } from 'src/common/entities/base.entity';
 import { Car } from 'src/modules/cars/entities/car.entity';
@@ -44,10 +51,10 @@ export class OrderDetail extends BaseEntityAbstract {
   @JoinColumn({ name: 'drop_off_city_id', referencedColumnName: 'id' })
   dropOffCity: City;
 
-  @OneToMany(() => Review, (review) => review.orderDetail, {
+  @OneToOne(() => Review, (review) => review.orderDetail, {
     createForeignKeyConstraints: false,
   })
-  reviews: Review[];
+  review: Review;
 
   @Column({ name: 'pick_up_at', nullable: true })
   pickUpAt: Date;

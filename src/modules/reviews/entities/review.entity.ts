@@ -1,13 +1,13 @@
 import { BaseEntityAbstract } from 'src/common/entities/base.entity';
+import { Car } from 'src/modules/cars/entities/car.entity';
 import { OrderDetail } from 'src/modules/orders/entities/order-detail.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 
-import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, Index, OneToOne } from 'typeorm';
 
 @Entity('reviews')
 export class Review extends BaseEntityAbstract {
   @Column({ name: 'user_id', nullable: true })
-  @Index('idx_reviews_user_id')
   userId: number;
 
   @ManyToOne(() => User, (user) => user.reviews, {
@@ -17,10 +17,9 @@ export class Review extends BaseEntityAbstract {
   user: User;
 
   @Column({ name: 'order_detail_id', nullable: true })
-  @Index('idx_reviews_order_detail_id')
   orderDetailId: number;
 
-  @ManyToOne(() => OrderDetail, (orderDetail) => orderDetail.reviews, {
+  @OneToOne(() => OrderDetail, (orderDetail) => orderDetail.review, {
     createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'order_detail_id', referencedColumnName: 'id' })
