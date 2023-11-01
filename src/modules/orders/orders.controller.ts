@@ -21,6 +21,7 @@ import { MailService } from 'src/shared/mailer/mail.service';
 import { DataSource } from 'typeorm';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PaymentMethodsService } from '../payment-methods/payment-methods.service';
+import { PromosService } from '../promos/promos.service';
 import { User } from '../users/entities/user.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { CreatedOrderDto } from './dto/created-order.dto';
@@ -38,6 +39,7 @@ export class OrdersController {
   constructor(
     private readonly ordersService: OrdersService,
     private readonly paymentMethodsService: PaymentMethodsService,
+    private readonly promosService: PromosService,
     private readonly dataSource: DataSource,
     private mailService: MailService,
   ) {}
@@ -67,6 +69,11 @@ export class OrdersController {
     await queryRunner.startTransaction();
 
     try {
+      if (createOrderDto.promo_code) {
+        promo = await this.promosService.getPromoByCode(
+          createOrderDto.promo_code,
+        );
+      }
       const order = await this.ordersService.createOrder(
         createOrderDto,
         user,

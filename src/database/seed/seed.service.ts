@@ -21,6 +21,8 @@ import { CarCity } from 'src/modules/cars/entities/car-city.entity';
 import { carCities } from './data/car-cities.data';
 import { PaymentMethod } from 'src/modules/payment-methods/entities/payment-method.entity';
 import { paymentMethods } from './data/payment-methods.data';
+import { Promo } from 'src/modules/promos/entities/promo.entity';
+import { promos } from './data/promo.data';
 
 @Injectable()
 export class SeedService {
@@ -54,6 +56,9 @@ export class SeedService {
 
     @InjectRepository(PaymentMethod)
     private paymentMethodsRepository: Repository<PaymentMethod>,
+
+    @InjectRepository(Promo)
+    private promosRepository: Repository<Promo>,
   ) {}
 
   createCars(): Array<Promise<Car>> {
@@ -225,13 +230,31 @@ export class SeedService {
     return paymentMethods.map(async (paymentMethod) => {
       return await this.paymentMethodsRepository
         .findOne({
-          where: {  },
+          where: {},
         })
         .then(async (dbPaymentMethod) => {
           if (dbPaymentMethod) {
             return Promise.resolve(null);
           }
-          return Promise.resolve(await this.paymentMethodsRepository.save(paymentMethod));
+          return Promise.resolve(
+            await this.paymentMethodsRepository.save(paymentMethod),
+          );
+        })
+        .catch((error) => Promise.reject(error));
+    });
+  }
+
+  createPromos(): Array<Promise<Promo>> {
+    return promos.map(async (promo) => {
+      return await this.promosRepository
+        .findOne({
+          where: {},
+        })
+        .then(async (dbPromo) => {
+          if (dbPromo) {
+            return Promise.resolve(null);
+          }
+          return Promise.resolve(await this.promosRepository.save(promo));
         })
         .catch((error) => Promise.reject(error));
     });

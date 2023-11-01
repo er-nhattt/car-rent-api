@@ -6,7 +6,7 @@ export class Seeder {
   constructor(private readonly seedService: SeedService) {}
 
   async seed() {
-    await this.paymentMethod()
+    await this.promo()
       .then((completed) => {
         console.log('Successfully completed seeding');
         Promise.resolve(completed);
@@ -102,6 +102,15 @@ export class Seeder {
     return await Promise.all(this.seedService.createPaymentMethods())
       .then(() => {
         console.log('Creating payment methods ...');
+        return Promise.resolve(true);
+      })
+      .catch((error) => Promise.reject(error));
+  }
+
+  async promo() {
+    return await Promise.all(this.seedService.createPromos())
+      .then(() => {
+        console.log('Creating promo code ...');
         return Promise.resolve(true);
       })
       .catch((error) => Promise.reject(error));

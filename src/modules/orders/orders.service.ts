@@ -221,6 +221,7 @@ export class OrdersService {
         }),
       ],
     });
+    console.log(order);
     return order;
   }
 

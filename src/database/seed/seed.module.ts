@@ -10,6 +10,7 @@ import { City } from 'src/modules/cites/entities/city.entity';
 import { Image } from 'src/modules/images/entities/image.entity';
 import { Language } from 'src/modules/languages/entities/language.entity';
 import { PaymentMethod } from 'src/modules/payment-methods/entities/payment-method.entity';
+import { Promo } from 'src/modules/promos/entities/promo.entity';
 import { SeedService } from './seed.service';
 
 @Module({
@@ -24,7 +25,8 @@ import { SeedService } from './seed.service';
       CarType,
       City,
       CarCity,
-      PaymentMethod
+      PaymentMethod,
+      Promo,
     ]),
   ],
   providers: [SeedService],
