@@ -105,7 +105,6 @@ export class ReviewsService {
   }
 
   async getReviewsByCarId(getReviewsDto: GetReviewsDto) {
-    console.log('getReviewsDto:', getReviewsDto);
     const offset = REVIEW_LIMIT_PAGINATION * (getReviewsDto.page - 1);
     const [data, total] = await this.reviewsRepository.findAndCount({
       where: {
